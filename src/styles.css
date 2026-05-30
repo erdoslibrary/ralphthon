@@ -510,6 +510,11 @@ dd {
   padding: 18px;
 }
 
+.leaderboard-list li.empty-state {
+  display: block;
+  text-align: center;
+}
+
 @media (max-width: 900px) {
   .topbar,
   .content-grid {

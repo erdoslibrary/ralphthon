@@ -33,6 +33,7 @@ Builder claim is not evidence. Command output, file inspection, passing test res
 | V-006 | Visual theme and personal/global separation validation | npm test / npm run build / npm run smoke / browser rehearsal | 0 / 0 / 0 / PASS | PASS | 13 tests passed, build complete, smoke text found, themed browser flow passed |
 | V-007 | Plugin info panels and Global Arena URL validation | npm test / npm run build / npm run smoke / browser rehearsal | 0 / 0 / 0 / PASS | PASS | 16 tests passed, build complete, smoke text found, info panel and URL browser flow passed |
 | V-008 | UI/UX proposal implementation validation | npm test / npm run build / npm run smoke / browser rehearsal | 0 / 0 / 0 / PASS | PASS | 17 tests passed, build complete, smoke text found, dalgona copy and expanded badges passed |
+| V-009 | Worldwide case empty state vertical wrapping layout fix | npm test / npm run build / npm run smoke | 0 / 0 / 0 | PASS | 17 tests passed, build complete, smoke inspection passed, CSS display overrides verified |
 
 ## 4. Acceptance Criteria Validation Table
 
@@ -510,6 +511,67 @@ npm run smoke
 
 ### Validator Decision
 PASS_INITIAL_WITH_REMAINING_DEMO_REHEARSAL
+
+## 4.7 Validation Run V-009: Worldwide Case Empty State Vertical Wrapping Layout Fix
+
+### Timestamp
+2026-05-30
+
+### Trigger
+User request to fix Worldwide Case/Global Arena empty state vertical word wrapping layout issue.
+
+### Scope
+Check CSS styles for `.leaderboard-list li.empty-state`, rebuild application, and re-run all validation tests.
+
+### Related Task
+F-002 Recovery
+
+### Related Acceptance Criteria
+AC-006 (Worldwide Case separation)
+
+### Commands Run
+```bash
+npm test
+npm run build
+npm run smoke
+```
+
+### Command Results
+- Command: npm test
+  - Exit status: 0
+  - Result: PASS
+  - Notes: All 17 automated tests passed.
+- Command: npm run build
+  - Exit status: 0
+  - Result: PASS
+  - Notes: Build complete, copied updated `src/styles.css` to `dist/src/styles.css`.
+- Command: npm run smoke
+  - Exit status: 0
+  - Result: PASS
+  - Notes: Smoke inspection passed.
+
+### Tests Summary
+- Total: 17
+- Passed: 17
+- Failed: 0
+- Skipped: 0
+
+### Build Summary
+- Build command: npm run build
+- Result: PASS
+
+### Runtime / Smoke Summary
+- Smoke command: npm run smoke
+- Result: PASS
+
+### Failed Items
+- None (F-002 successfully resolved).
+
+### Risks
+- None.
+
+### Validator Decision
+PASS
 
 ## 5. Validation Run Template
 

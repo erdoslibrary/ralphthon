@@ -34,6 +34,7 @@ Low: Minor polish/docs issue
 | Failure ID | Title | Severity | Source Type | Related AC | Related Test | Status | Retry Count |
 |---|---|---|---|---|---|---|---|
 | F-001 | Reminder mission test omitted valid score-band copy | Low | UNIT_TEST | AC-004 | npm test | CLOSED | 0 |
+| F-002 | Worldwide case empty state text renders vertically | Low | MANUAL_DEMO | AC-006 | UI layout | CLOSED | 0 |
 
 ## F-001: Reminder mission test omitted valid score-band copy
 
@@ -78,6 +79,58 @@ Test expectation did not include the full approved reminder message set.
 
 ### Regression Test Required
 YES
+
+### Validator Decision
+PASS
+
+## F-002: Worldwide case empty state text renders vertically
+
+### Status
+CLOSED
+
+### Severity
+Low
+
+### Source Type
+MANUAL_DEMO
+
+### Related Acceptance Criteria
+AC-006 (Worldwide case separation)
+
+### Summary
+The dashboard empty-state message inside the Worldwide Case/Global Arena leaderboard ("Run survival check to reveal rankings.") renders vertically (one word per line).
+
+### Expected Behavior
+The empty-state message is displayed horizontally as a normal text run, properly aligned and centered.
+
+### Actual Behavior
+Each word wraps onto a new line because the `li.empty-state` element inherits the `display: grid` style from `.leaderboard-list li`, which defines a very narrow first column of `42px`, forcing the single text node to wrap to `42px`.
+
+### Reproduction Command
+```bash
+# View the initial dashboard UI in a browser before running a survival check.
+```
+
+### Failure Output / Evidence
+```txt
+In the Global Arena section under Worldwide Case:
+"Run
+survival
+check
+to
+reveal
+rankings."
+```
+
+### Root Cause
+`.leaderboard-list li` has `display: grid` with `grid-template-columns: 42px minmax(0, 1fr) 56px;`. The empty-state `li` is treated as a grid container, placing its sole text node into the first column of `42px` width.
+
+### Fix Plan
+1. Add a CSS rule `.leaderboard-list li.empty-state { display: block; text-align: center; }` to override the grid layout for the empty-state list item.
+2. Build the app using `npm run build` and verify.
+
+### Regression Test Required
+NO
 
 ### Validator Decision
 PASS
