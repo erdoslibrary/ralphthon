@@ -64,6 +64,16 @@ Smoke test steps:
 6. Confirm recommendation statuses appear.
 7. Confirm no plugin is actually deleted.
 
+Last validated:
+
+```txt
+2026-05-30
+npm test: PASS, 13 passed / 0 failed
+npm run build: PASS, dist/ created
+npm run smoke: PASS, dashboard entry text, safety copy, and review-only actions found
+browser rehearsal: PASS, local demo flow and fallback states confirmed
+```
+
 ---
 
 ## 5. Cloud Deployment

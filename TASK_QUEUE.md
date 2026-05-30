@@ -21,10 +21,12 @@ Implementation gate: OPEN_WITH_MOCK_DATA
 | T-007 | Add deletion recommendation UI only | Builder | VALIDATED | T-003 | npm test / npm run smoke |
 | T-008 | Add reminder recommendation UI | Builder | VALIDATED | T-003 | npm test |
 | T-009 | Add weekly/monthly leaderboard UI | Builder | VALIDATED | T-004 | npm test |
-| T-010 | Write demo script | Packager | TODO | T-005 | manual rehearsal |
-| T-011 | Document run/test/build commands | Packager | IN_PROGRESS | repo setup | smoke validation |
-| T-012 | Final validation | Validator | TODO | all P0 tasks | validation report |
+| T-010 | Write demo script | Packager | VALIDATED | T-005 | browser rehearsal |
+| T-011 | Document run/test/build commands | Packager | VALIDATED | repo setup | npm run smoke |
+| T-012 | Final validation | Validator | VALIDATED_LOCAL_MVP | all P0 tasks | validation report V-005 |
 | T-013 | Coordinate `back` branch integration proposal | Coordinator | TODO | API_CONTRACT.md | document review before merge |
+| T-014 | Add review-only actions for deletion recommendations | Builder | VALIDATED | T-007,UI_STATES.md | npm test / npm run build / npm run smoke / browser rehearsal |
+| T-015 | Apply survival-game visual theme and separate personal/global views | Builder | VALIDATED | T-005,T-009,UI_STATES.md | npm test / npm run build / npm run smoke / browser rehearsal V-006 |
 
 ---
 

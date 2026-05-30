@@ -4,7 +4,7 @@
 
 Project: Coqid-game
 
-Current phase: INITIAL_VALIDATION_PASSED_WITH_MOCK_DATA
+Current phase: FINAL_VALIDATION_PASSED_LOCAL_MVP
 
 Implementation gate: OPEN_WITH_MOCK_DATA
 
@@ -49,8 +49,8 @@ Coqid-game is a Codex plugin/skill survival dashboard that scores plugins using 
 1. Keep MVP scope aligned with no destructive deletion.
 2. Continue frontend/dashboard work on `main`.
 3. Coordinate backend/integration experiments on `back` without introducing live API dependency into MVP.
-4. Update validation evidence after each build/test/smoke run.
-5. Prepare and rehearse final demo script.
+4. Keep final validation evidence current after any future change.
+5. Do not merge `back` API/backend behavior unless contracts and validation are updated first.
 
 ---
 
@@ -69,7 +69,7 @@ If `back` introduces API/backend behavior, it must update API_CONTRACT.md, DATA_
 
 ## 5. Final Readiness
 
-Current readiness: NOT_READY
+Current readiness: READY_LOCAL_MVP_EXCLUDING_BACK
 
 Reason:
-Initial tests, build, and smoke validation passed, but final demo rehearsal and final checklist are not complete.
+Local MVP validation passed with mock data. Browser rehearsal confirmed the demo flow, survival-game-inspired visual theme, My Case / Global Arena separation, review-only deletion recommendation actions, empty fallback, malformed-data fallback, and no console errors. `back` branch integration remains outside the current ready scope.

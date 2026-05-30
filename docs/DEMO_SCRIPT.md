@@ -28,6 +28,10 @@ Show:
 - estimated cost
 - last used
 
+Point out:
+- My Case is the user's local plugin survival board.
+- Global Arena is the worldwide-style anonymous sample leaderboard.
+
 ### Step 3: Run Survival Check
 
 Click:
@@ -55,9 +59,24 @@ Say:
 Coqid-game only recommends deletion review. It never deletes plugins automatically.
 ```
 
+For the deletion-recommended plugin, click one review-only action:
+
+```txt
+Add to Cleanup List
+```
+
+Expected:
+The app records a local manual-review note and does not change, delete, disable, or uninstall any plugin.
+
 ### Step 5: Show leaderboard
 
 Show weekly and monthly leaderboard.
+
+Say:
+
+```txt
+The left side is my local use case. The right side is the worldwide-style comparison board, powered by sample data for the MVP.
+```
 
 ### Step 6: Show fallback/edge case
 
@@ -95,3 +114,19 @@ Use local demo.
 
 If scoring fails:
 Show validation report and known failed case.
+
+---
+
+## 6. Rehearsal Evidence
+
+Date: 2026-05-30
+
+Result: PASS_LOCAL
+
+Evidence:
+- Browser rehearsal at `http://127.0.0.1:4173`
+- Run Survival Check displayed Safe, Reminder Recommended, and Deletion Recommended
+- Add to Cleanup List displayed local review note
+- Empty Demo displayed safe empty state
+- Malformed Demo displayed controlled fallback state
+- Browser console errors: 0

@@ -10,10 +10,11 @@
     <main class="app-shell">
       <section class="topbar" aria-labelledby="app-title">
         <div>
-          <p class="eyebrow">Codex plugin survival audit</p>
+          <p class="eyebrow"><span class="shape-dot"></span> Codex plugin survival audit</p>
           <h1 id="app-title">Coqid-game</h1>
           <p class="summary">
-            Score plugin usefulness with local sample data. Recommendations are review-only and never delete plugins.
+            Score plugin usefulness with local sample data in a high-stakes survival board. Recommendations are
+            review-only and never delete plugins.
           </p>
         </div>
         <div class="actions" aria-label="Dashboard actions">
@@ -28,7 +29,11 @@
         Coqid-game only recommends review. It does not delete, uninstall, disable, or modify plugins.
       </section>
 
-      <section class="metrics" aria-label="Summary metrics">
+      <section class="metrics personal-zone" aria-label="My plugin case summary">
+        <div class="zone-label">
+          <strong>My Case</strong>
+          <small>Local plugin survival status</small>
+        </div>
         <div><span id="metric-total">0</span><small>Total</small></div>
         <div><span id="metric-safe">0</span><small>Safe</small></div>
         <div><span id="metric-reminder">0</span><small>Reminder</small></div>
@@ -40,7 +45,10 @@
       <section class="content-grid">
         <div>
           <div class="section-heading">
-            <h2>Plugin Contestants</h2>
+            <div>
+              <p class="section-kicker">Personal Use Case</p>
+              <h2>My Plugin Contestants</h2>
+            </div>
             <select id="status-filter" aria-label="Filter by status">
               <option value="ALL">All statuses</option>
               <option value="SAFE">Safe</option>
@@ -51,14 +59,18 @@
           <div id="plugin-list" class="plugin-list"></div>
         </div>
 
-        <aside class="leaderboards" aria-label="Leaderboards">
+        <aside class="leaderboards global-zone" aria-label="Worldwide case leaderboards">
           <div class="section-heading">
-            <h2>Leaderboard</h2>
+            <div>
+              <p class="section-kicker">Worldwide Case</p>
+              <h2>Global Arena</h2>
+            </div>
             <div class="tabs" role="tablist" aria-label="Leaderboard period">
               <button id="weekly-tab" type="button" class="tab active">Weekly</button>
               <button id="monthly-tab" type="button" class="tab">Monthly</button>
             </div>
           </div>
+          <p class="global-copy">Anonymous sample ranking for comparing your local plugins against a world-style board.</p>
           <ol id="leaderboard-list" class="leaderboard-list"></ol>
         </aside>
       </section>

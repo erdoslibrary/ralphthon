@@ -7,7 +7,14 @@ const requiredText = [
   "Coqid-game",
   "Run Survival Check",
   "Deletion Recommended",
-  "It does not delete"
+  "It does not delete",
+  "Mark as Reviewed",
+  "Keep for Now",
+  "Add to Cleanup List",
+  "My Case",
+  "Personal Use Case",
+  "Worldwide Case",
+  "Global Arena"
 ];
 
 for (const text of requiredText) {
@@ -16,4 +23,4 @@ for (const text of requiredText) {
   }
 }
 
-console.log("Smoke inspection passed: dashboard entry text and safety copy found.");
+console.log("Smoke inspection passed: dashboard entry text, safety copy, and review-only actions found.");

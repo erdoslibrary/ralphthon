@@ -107,7 +107,7 @@ Output must be sorted by descending rank score.
 Mock data location:
 
 ```txt
-src/data/samplePlugins.ts
+src/data/samplePlugins.js
 ```
 
 Required shape:

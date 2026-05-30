@@ -61,6 +61,10 @@ Each plugin card shows:
 - last used date
 - current status area
 
+Visual grouping:
+- This area is labeled as the personal use case / My Case.
+- It must be visually distinct from the global leaderboard area.
+
 ---
 
 ## 5. Scoring State
@@ -150,6 +154,10 @@ Badges:
 - Most Used
 - Most Efficient
 - Most Endangered
+
+Visual grouping:
+- This area is labeled as the worldwide case / Global Arena.
+- It uses anonymous sample rankings and must not imply live production telemetry.
 
 ---
 

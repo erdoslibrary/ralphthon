@@ -28,6 +28,15 @@ test("MVP source contains no actual plugin deletion path", async () => {
   assert.ok(checked.length > 0);
 });
 
+test("deletion recommendation UI exposes review-only actions", async () => {
+  const app = await readFile("src/app.js", "utf8");
+
+  assert.match(app, /Mark as Reviewed/);
+  assert.match(app, /Keep for Now/);
+  assert.match(app, /Add to Cleanup List/);
+  assert.match(app, /No deletion action exists/);
+});
+
 async function listFiles(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
   const files = [];

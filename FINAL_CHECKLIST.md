@@ -36,21 +36,25 @@
 ### Demo
 
 ```txt
-[ ] demo under 2 minutes
-[ ] Run Survival Check works in browser rehearsal
-[ ] SAFE shown in browser rehearsal
-[ ] REMINDER_RECOMMENDED shown in browser rehearsal
-[ ] DELETION_RECOMMENDED shown in browser rehearsal
-[ ] leaderboard shown in browser rehearsal
-[ ] fallback/empty state shown in browser rehearsal
+[x] demo under 2 minutes
+[x] Run Survival Check works in browser rehearsal
+[x] SAFE shown in browser rehearsal
+[x] REMINDER_RECOMMENDED shown in browser rehearsal
+[x] DELETION_RECOMMENDED shown in browser rehearsal
+[x] review-only deletion actions shown in browser rehearsal
+[x] survival-game-inspired theme shown in browser rehearsal
+[x] My Case and Global Arena visually separated
+[x] leaderboard shown in browser rehearsal
+[x] fallback/empty state shown in browser rehearsal
+[x] malformed-data fallback shown in browser rehearsal
 ```
 
 ### Final Decision
 
 ```txt
-Final status: NOT_READY
-Validator decision: PASS_INITIAL_WITH_REMAINING_DEMO_REHEARSAL
-Submission readiness: NOT_READY
+Final status: READY_LOCAL_MVP_EXCLUDING_BACK
+Validator decision: PASS_LOCAL_MVP_WITH_ACCEPTED_BACK_SCOPE_RISK
+Submission readiness: READY_FOR_LOCAL_MVP_DEMO
 ```
 
-Automated validation passed on 2026-05-30. Browser/manual demo rehearsal remains before final readiness.
+Automated validation and browser rehearsal passed on 2026-05-30. `back` branch integration remains outside final local MVP readiness.

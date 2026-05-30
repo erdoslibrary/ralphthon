@@ -19,8 +19,8 @@ Map Coqid-game acceptance criteria to concrete tests or validation steps.
 | AC-007 | monthly leaderboard sorted | TEST-007 | unit/integration | PASS |
 | AC-008 | empty data safe state | TEST-008 | integration/smoke | PASS |
 | AC-009 | malformed data safe fallback | TEST-009 | unit/integration | PASS |
-| AC-010 | no actual deletion | TEST-010 | static/integration | PASS |
-| AC-011 | demo under 2 minutes | TEST-011 | manual rehearsal | NOT_RUN |
+| AC-010 | no actual deletion | TEST-010 / TEST-013 | static/integration/browser | PASS |
+| AC-011 | demo under 2 minutes | TEST-011 | browser rehearsal | PASS_LOCAL |
 | AC-012 | app runs without live Codex API | TEST-012 | smoke | PASS_INITIAL |
 
 ---
@@ -32,6 +32,7 @@ tests/scoring.test.js
 tests/leaderboard.test.js
 tests/validation.test.js
 tests/noDeletion.test.js
+scripts/smoke.mjs
 ```
 
 ---

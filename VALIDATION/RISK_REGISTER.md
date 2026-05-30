@@ -6,10 +6,10 @@
 |---|---|---|---|---|
 | R-001 | Real Codex plugin usage API may be unavailable | High | ACCEPTED | use mock/local data |
 | R-002 | Plugin-level exact token/coin cost may be unavailable | High | ACCEPTED | use estimated cost label |
-| R-003 | Actual deletion is destructive | Critical | MITIGATED | recommendation only; no delete action |
+| R-003 | Actual deletion is destructive | Critical | MITIGATED | recommendation only; no delete action; review actions are local notes only |
 | R-004 | Cross-user leaderboard needs privacy/backend | High | DEFERRED | use anonymous sample data |
 | R-005 | Name/theme may imply protected IP | Medium | MITIGATING | use Coqid-game branding, avoid direct protected claims |
-| R-006 | Demo depends on local run | Medium | MITIGATED_INITIAL | documented commands; smoke test passed |
+| R-006 | Demo depends on local run | Medium | MITIGATED | documented commands; smoke and browser rehearsal passed |
 | R-007 | Team `back` branch may add API dependency | Medium | OPEN | require contract/test/risk updates before merge |
 
 ---
@@ -32,6 +32,7 @@ Accepted for MVP:
 - mock/local data instead of real Codex telemetry
 - estimated cost instead of exact token/coin accounting
 - sample leaderboard instead of production cross-user leaderboard
+- survival-game-inspired colors and shapes without claiming official affiliation
 
 Not accepted:
 - automatic deletion

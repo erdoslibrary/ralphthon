@@ -10,7 +10,7 @@ Coverage priority is behavior coverage, not vanity line coverage.
 
 | Area | Required? | Status |
 |---|---|---|
-| P0 acceptance criteria | YES | PARTIAL_PASS_INITIAL |
+| P0 acceptance criteria | YES | PASS_LOCAL_MVP |
 | scoring engine | YES | PASS |
 | status classifier | YES | PASS |
 | deletion recommendation only | YES | PASS |
@@ -18,8 +18,10 @@ Coverage priority is behavior coverage, not vanity line coverage.
 | leaderboard sorting | YES | PASS |
 | empty state | YES | PASS |
 | malformed data fallback | YES | PASS |
-| local run/smoke | YES | PASS_INITIAL |
+| local run/smoke | YES | PASS |
 | actual deletion path | MUST NOT EXIST | PASS_STATIC_INSPECTION |
+| review-only deletion actions | YES | PASS_STATIC_AND_BROWSER |
+| personal/global visual separation | YES | PASS_SMOKE_AND_BROWSER |
 
 ---
 
@@ -34,7 +36,7 @@ Final READY requires:
 [x] empty/malformed data tests pass
 [x] no actual deletion action exists
 [x] local smoke test passes
-[ ] demo rehearsal passes
+[x] demo rehearsal passes
 ```
 
 ---
@@ -46,4 +48,4 @@ Final READY requires:
 | real Codex API not covered | accepted | out of MVP |
 | real cross-user leaderboard not covered | accepted | out of MVP |
 | exact token/coin cost not covered | accepted | estimated cost only |
-| manual demo rehearsal not run | medium | complete docs/DEMO_SCRIPT.md rehearsal before final freeze |
+| `back` branch integration not validated | medium | keep out of local MVP readiness until contracts and validation are updated |

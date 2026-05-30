@@ -10,8 +10,8 @@ A failure is not fully resolved until a regression test exists and passes, an ex
 
 ```txt
 Document status: DRAFT
-Total regression items: 0
-Validator decision: NOT_RUN
+Total regression items: 1
+Validator decision: PASS_LOCAL_MVP
 ```
 
 ## 2. Regression Rules
@@ -35,7 +35,7 @@ ACCEPTED_RISK
 
 | Regression ID | Original Failure | Severity | Related AC | Test/Method | Command | Status | Evidence |
 |---|---|---|---|---|---|---|---|
-| REG-XXX | F-XXX | TBD | AC-XXX | TBD | TBD | PLANNED | VALIDATION_REPORT.md |
+| REG-001 | No failure; destructive-action risk protection | Critical risk | AC-010 | tests/noDeletion.test.js + scripts/smoke.mjs + browser rehearsal | npm test / npm run smoke | PASS | VALIDATION_REPORT.md V-005 |
 
 ## 5. Regression Item Template
 
@@ -78,10 +78,10 @@ VALIDATION/VALIDATION_REPORT.md V-XXX
 ## 6. Final Regression Review
 
 ```txt
-[ ] All Critical fixed failures have regression protection
-[ ] All High fixed failures have regression protection or accepted risk
-[ ] No Critical/High regression item is FAIL
-[ ] Regression evidence is recorded
-[ ] TEST_MAPPING.md is updated
-[ ] FAILED_CASES.md closure status is consistent
+[x] All Critical fixed failures have regression protection or no Critical fixed failures exist
+[x] All High fixed failures have regression protection or accepted risk
+[x] No Critical/High regression item is FAIL
+[x] Regression evidence is recorded
+[x] TEST_MAPPING.md is updated
+[x] FAILED_CASES.md closure status is consistent
 ```

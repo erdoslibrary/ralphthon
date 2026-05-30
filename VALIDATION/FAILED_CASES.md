@@ -13,7 +13,7 @@ Document status: DRAFT
 Open failures: 0
 Critical failures: 0
 Repeated failures: 0
-Validator decision: NOT_RUN
+Validator decision: PASS_NO_OPEN_FAILURES
 ```
 
 ## 2. Rules

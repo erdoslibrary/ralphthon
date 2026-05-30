@@ -8,6 +8,7 @@ const state = {
   plugins: samplePlugins,
   errors: [],
   scores: [],
+  reviewActions: {},
   hasRun: false,
   filter: "ALL",
   period: "weekly"
@@ -40,6 +41,7 @@ elements.statusFilter.addEventListener("change", (event) => {
 });
 elements.weeklyTab.addEventListener("click", () => setPeriod("weekly"));
 elements.monthlyTab.addEventListener("click", () => setPeriod("monthly"));
+elements.pluginList.addEventListener("click", handleReviewAction);
 
 loadData(samplePlugins, true);
 
@@ -49,6 +51,7 @@ function loadData(rows, preserveMessage) {
   state.plugins = result.plugins;
   state.errors = result.errors;
   state.scores = [];
+  state.reviewActions = {};
   state.hasRun = false;
   state.filter = "ALL";
   elements.statusFilter.value = "ALL";
@@ -79,6 +82,15 @@ function setPeriod(period) {
   elements.weeklyTab.classList.toggle("active", period === "weekly");
   elements.monthlyTab.classList.toggle("active", period === "monthly");
   renderLeaderboard();
+}
+
+function handleReviewAction(event) {
+  const button = event.target.closest("[data-review-action]");
+  if (!button) return;
+
+  const { pluginId, reviewAction } = button.dataset;
+  state.reviewActions[pluginId] = getReviewActionLabel(reviewAction);
+  renderPlugins();
 }
 
 function setMessage(result) {
@@ -137,6 +149,7 @@ function renderPlugins() {
       const score = scoreById.get(plugin.id);
       const status = score?.status ?? "PENDING";
       const reasons = score?.reasons ?? ["Run Survival Check to calculate a deterministic score."];
+      const reviewNote = state.reviewActions[plugin.id];
 
       return `
         <article class="plugin-card ${status.toLowerCase()}">
@@ -157,7 +170,7 @@ function renderPlugins() {
           <ul class="reason-list">
             ${reasons.map((reason) => `<li>${escapeHtml(reason)}</li>`).join("")}
           </ul>
-          ${status === STATUSES.DELETION_RECOMMENDED ? `<p class="safety-copy">Review only. No deletion action exists in this MVP.</p>` : ""}
+          ${status === STATUSES.DELETION_RECOMMENDED ? renderReviewOnlyActions(plugin.id, reviewNote) : ""}
         </article>
       `;
     })
@@ -199,6 +212,27 @@ function formatBadge(badge) {
     .split("_")
     .map((part) => part[0].toUpperCase() + part.slice(1))
     .join(" ");
+}
+
+function renderReviewOnlyActions(pluginId, reviewNote) {
+  return `
+    <div class="review-panel">
+      <p class="safety-copy">Review only. No deletion action exists in this MVP.</p>
+      <div class="review-actions" aria-label="Review-only actions">
+        <button type="button" class="secondary" data-plugin-id="${escapeHtml(pluginId)}" data-review-action="reviewed">Mark as Reviewed</button>
+        <button type="button" class="secondary" data-plugin-id="${escapeHtml(pluginId)}" data-review-action="keep">Keep for Now</button>
+        <button type="button" class="secondary" data-plugin-id="${escapeHtml(pluginId)}" data-review-action="cleanup">Add to Cleanup List</button>
+      </div>
+      ${reviewNote ? `<p class="review-note" aria-live="polite">${escapeHtml(reviewNote)}</p>` : ""}
+    </div>
+  `;
+}
+
+function getReviewActionLabel(action) {
+  if (action === "reviewed") return "Marked as reviewed for manual follow-up.";
+  if (action === "keep") return "Kept for now. No plugin was changed.";
+  if (action === "cleanup") return "Added to local cleanup list for manual review.";
+  return "Review note saved locally.";
 }
 
 function escapeHtml(value) {
