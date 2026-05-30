@@ -1,0 +1,9 @@
+{
+  "generatedAt": "2026-05-30T00:00:00.000Z",
+  "plugins": [
+    {
+      "id": "broken-json"
+      "name": "Broken JSON"
+    }
+  ]
+}

@@ -1,167 +1,156 @@
-# ARCHITECTURE.md — Coqid-game
+# ARCHITECTURE.md — Coqid-game CLI Architecture
 
-## 0. Architecture Principle
+## 0. Purpose
 
-Coqid-game must use the smallest architecture that can demonstrate plugin scoring, deletion recommendations, reminders, and leaderboard without real API dependency.
+Define the smallest stable CLI-first architecture for Coqid-game.
 
-Default architecture:
+The previous web-dashboard direction is rejected for MVP. Coqid-game must be implemented as a CLI-based plugin assistant.
+
+---
+
+## 1. Architecture Status
 
 ```txt
-Single local web dashboard
-+ deterministic scoring engine
-+ mock/local plugin usage data
-+ optional localStorage
-+ no backend for MVP
+Document status: FINAL
+Product type: CLI tool / Codex plugin assistant
+Architecture frozen: YES
+Validator decision: PASS
 ```
 
 ---
 
-## 1. System Overview
-
-Coqid-game is a dashboard that allows Codex users to review plugins/skills, run a survival score calculation, and see which plugins are Safe, Reminder Recommended, or Deletion Recommended.
-
----
-
-## 2. Product Type
-
-Selected:
+## 2. Architecture Decision
 
 ```txt
-Single-page frontend app / local dashboard prototype
+Selected product type: CLI tool
+Web app: OUT_OF_SCOPE
+Backend API: OUT_OF_SCOPE for MVP
+Cloud deployment: OUT_OF_SCOPE for MVP
+Local fixture data: REQUIRED
+Actual deletion: FORBIDDEN for MVP
 ```
-
-Actual stack:
-
-```txt
-Node.js scripts + static HTML/CSS/JavaScript modules
-```
-
-Reason:
-The static dashboard keeps the MVP smaller than a framework app while preserving deterministic tests, build, smoke validation, and local demo.
-
-Alternative acceptable future stack:
-
-```txt
-Vite + React + TypeScript
-```
-
-MVP should not require backend or cloud deployment.
 
 ---
 
 ## 3. High-Level Architecture
 
 ```txt
-User
-  -> Coqid-game Dashboard UI
-  -> Mock/Local Plugin Usage Data
-  -> Input/Data Validation
-  -> Survival Scoring Engine
-  -> Status Classifier
-  -> Leaderboard Builder
-  -> UI Renderer
-  -> Demo Result
+User terminal
+  -> coqid-game CLI entry point
+  -> argument parser
+  -> data loader
+  -> schema validator
+  -> scoring engine
+  -> recommendation engine
+  -> leaderboard engine
+  -> terminal reporter / JSON reporter
+  -> exit code
 ```
 
 ---
 
-## 4. Modules
-
-| Module | Responsibility | Tests |
-|---|---|---|
-| Plugin Data Loader | load mock/local plugin data | malformed/empty data tests |
-| Scoring Engine | calculate survival score | unit tests |
-| Status Classifier | SAFE / REMINDER_RECOMMENDED / DELETION_RECOMMENDED | unit tests |
-| Leaderboard Builder | weekly/monthly sorting | unit tests |
-| Dashboard UI | render plugin cards and rankings | integration/smoke |
-| Fallback UI | empty/malformed data handling | integration/smoke |
-
----
-
-## 5. ADRs
-
-### ADR-001: No backend for MVP
-
-Status: ACCEPTED
-
-Reason:
-Mock/local data is sufficient to prove the core value in 2 minutes.
-
-Tradeoff:
-No real cross-user leaderboard in MVP.
-
----
-
-### ADR-002: No actual plugin deletion
-
-Status: ACCEPTED
-
-Reason:
-Deletion is destructive and likely unsafe/unavailable. MVP recommends deletion only.
-
-Validation:
-Static inspection must confirm no uninstall/delete action exists.
-
----
-
-### ADR-003: Estimated cost instead of exact token/coin cost
-
-Status: ACCEPTED
-
-Reason:
-Plugin-level exact cost may not be available. MVP labels cost as estimated.
-
----
-
-### ADR-004: Mock/local data first
-
-Status: ACCEPTED
-
-Reason:
-The final demo must work without live Codex API access.
-
----
-
-## 6. File Structure Suggestion
+## 4. Recommended Module Structure
 
 ```txt
+cli/
+  coqid-game.js
+
 src/
-  data/
-    samplePlugins.js
-  domain/
-    scoring.js
-    leaderboard.js
-    validation.js
-  app.js
-  styles.css
+  cli.js
+  dataLoader.js
+  scoring.js
+  formatters.js
+  errors.js
+
+fixtures/
+  plugins.json
+  invalid.json
+  empty.json
 
 tests/
   scoring.test.js
-  leaderboard.test.js
   validation.test.js
+  cli.test.js
   noDeletion.test.js
 ```
 
 ---
 
-## 7. Risk Constraints
+## 5. Core Modules
 
-Do not add:
-- authentication
-- production backend
-- database
-- real deletion API
-- cloud-only deployment
-- live API dependency for final demo
+| Module | Responsibility | Required? | Tests |
+|---|---|---:|---|
+| CLI entry | Parse command and route to subcommands | YES | smoke/integration |
+| Data loader | Load local JSON file | YES | unit/integration |
+| Schema validator | Reject malformed data | YES | unit |
+| Scoring engine | Compute deterministic survival score | YES | unit |
+| Recommendation engine | Assign SAFE/WATCH/REMIND/DELETE_RECOMMENDED | YES | unit |
+| Leaderboard engine | Sort weekly/monthly ranking | YES | unit/integration |
+| Terminal reporter | Print readable table/output | YES | snapshot/manual |
+| JSON reporter | Machine-readable output | P1 | integration |
+| Delete executor | Actually delete plugin | NO / FORBIDDEN | static inspection |
 
 ---
 
-## 8. Architecture Gate
+## 6. ADRs
 
-Architecture status: READY_FOR_IMPLEMENTATION
+### ADR-001: CLI-first, no web dashboard
 
-Implementation allowed if:
-- mock data exists
-- scoring rules are testable
-- deletion action is recommendation-only
-- demo can run locally
+```txt
+Status: ACCEPTED
+Decision: Implement Coqid-game as CLI-first tool.
+Reason: User explicitly wants plugin/CLI workflow, not web dashboard.
+Tradeoff: Less visual than web UI, but faster, more plugin-like, and easier to validate.
+```
+
+### ADR-002: Recommendation only, no actual deletion
+
+```txt
+Status: ACCEPTED
+Decision: Coqid-game only recommends deletion candidates.
+Reason: Actual deletion is risky and not needed for MVP demo.
+Validation: Static inspection must confirm no delete command or destructive file operation is present.
+```
+
+### ADR-003: Local fixture data for MVP
+
+```txt
+Status: ACCEPTED
+Decision: Use local JSON fixture or manually exported data.
+Reason: Real Codex plugin usage/cost API availability is uncertain.
+Validation: CLI integration tests use fixtures/plugins.json.
+```
+
+### ADR-004: No backend/API for MVP
+
+```txt
+Status: ACCEPTED
+Decision: No HTTP API or cloud backend for MVP.
+Reason: CLI can prove value locally.
+Validation: DEPLOYMENT.md must not require server startup for demo.
+```
+
+---
+
+## 7. Architecture Risks
+
+| Risk | Severity | Mitigation |
+|---|---|---|
+| Web implementation drift | High | Lock product type as CLI; web is backlog |
+| Deletion accidentally implemented | Critical | Static inspection + no delete command |
+| Real Codex data unavailable | High | Local fixture schema |
+| Runtime choice delayed | Medium | Decide during repository inspection |
+
+---
+
+## 8. Freeze Gate
+
+```txt
+[x] Runtime selected
+[x] CLI commands defined
+[x] Data schema defined
+[x] Scoring engine defined
+[x] Test mapping defined
+[x] Destructive deletion forbidden
+[x] Deployment commands documented
+```

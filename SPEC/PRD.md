@@ -1,191 +1,189 @@
-# SPEC/PRD.md — Coqid-game
+# SPEC/PRD.md — Coqid-game CLI
 
 ## 0. Purpose
 
-This PRD defines the MVP for **Coqid-game**, a Codex plugin/skill management dashboard that recommends deletion candidates without performing actual deletion.
+This PRD converts the Coqid-game idea into clear, testable, implementation-ready requirements.
 
 ---
 
-## 1. Product Summary
+## 1. PRD Status
 
-Product name: **Coqid-game**
-
-One-line description:
-Coqid-game helps Codex users audit installed plugins and skills by ranking them with survival scores and recommending low-value plugins for deletion review.
-
-Product type:
-Dashboard-style Codex plugin prototype.
-
-MVP platform:
-Local web dashboard using mock/local plugin usage data.
+```txt
+PRD status: FINAL
+Source product idea: PRODUCT_IDEA.md
+Product name: Coqid-game
+Product type: CLI tool / Codex plugin assistant
+Frozen: YES
+```
 
 ---
 
-## 2. Primary User
+## 2. Product Summary
 
-Codex users who install multiple plugins, skills, and workflow helpers and want to understand which ones are useful, forgotten, or wasteful.
+```txt
+Coqid-game is a CLI-based Codex plugin/skill survival ranking assistant.
+It helps Codex users identify low-value installed plugins/skills and recommends deletion candidates without actually deleting anything.
+```
+
+Target user:
+
+```txt
+Codex users who have installed many plugins/skills and want to know which ones are useful, forgotten, inefficient, or safe to remove.
+```
+
+Core value proposition:
+
+```txt
+A fast terminal command converts local plugin usage data into clear survival scores, deletion recommendations, reminder candidates, and weekly/monthly rankings.
+```
 
 ---
 
-## 3. Problem Definition
+## 3. MVP Product Type
 
-Users accumulate Codex plugins and skills over time, but they do not have a fun, clear, evidence-based way to decide which ones deserve to remain installed.
+```txt
+Primary interface: CLI
+Web UI: OUT_OF_SCOPE
+Backend API: OUT_OF_SCOPE for MVP
+Persistence: local JSON input only for MVP
+Authentication: OUT_OF_SCOPE
+Real deletion: OUT_OF_SCOPE
+```
 
-Current alternatives:
-- manually inspect installed plugins
-- rely on memory
-- delete rarely used tools randomly
-- keep everything installed forever
+---
+
+## 4. Problem Definition
+
+The user struggles with:
+
+```txt
+- too many installed Codex plugins/skills
+- unclear usage value
+- unclear cost efficiency
+- forgotten but potentially useful plugins
+- no simple ranking of what to keep or remove
+```
+
+Why this matters:
+
+```txt
+Plugin clutter increases cognitive load and may increase wasted model/API/tool usage.
+```
+
+Current alternative:
+
+```txt
+Manual inspection of installed plugins/skills and subjective guessing.
+```
 
 Weakness:
-Manual review is boring, subjective, and not based on usage/cost signals.
+
+```txt
+Manual inspection has no scoring, no leaderboard, no reminder logic, and no consistent deletion recommendation criteria.
+```
 
 ---
 
-## 4. Product Goal
+## 5. Goals and Non-goals
 
-Primary goal:
-Help users decide which plugins should be kept, remembered, or considered for deletion.
+### Goals
 
-Secondary goals:
-- make plugin cleanup engaging
-- show weekly/monthly plugin rankings
-- demonstrate cost-efficiency awareness
-- avoid destructive automatic deletion
+```txt
+G-001: Provide a CLI command that analyzes plugin/skill usage data.
+G-002: Calculate survival scores deterministically.
+G-003: Recommend deletion candidates without deleting anything.
+G-004: Recommend reminder candidates for forgotten but useful plugins.
+G-005: Show weekly/monthly leaderboard output.
+G-006: Handle invalid/missing data safely.
+```
 
-Non-goals:
-- real plugin deletion
-- automatic uninstall
-- real billing-grade token accounting
-- real cross-user production leaderboard
-- authentication
-- cloud deployment requirement
+### Non-goals
 
----
-
-## 5. MVP Features
-
-| ID | Feature | Priority | Demo Visible? |
-|---|---|---:|---|
-| F-001 | Plugin list dashboard | P0 | YES |
-| F-002 | Survival score calculation | P0 | YES |
-| F-003 | Deletion Recommended status | P0 | YES |
-| F-004 | Reminder Recommended status | P0 | YES |
-| F-005 | Weekly/monthly leaderboard | P0 | YES |
-| F-006 | Empty/malformed data fallback | P0 | YES |
-| F-007 | Explanation for score/status | P1 | YES |
-| F-008 | Real Codex API sync | P3 | NO |
-| F-009 | Actual deletion/uninstall | P3 | NO |
+```txt
+NG-001: Actually deleting plugins/skills.
+NG-002: Web dashboard.
+NG-003: Real Codex usage API integration.
+NG-004: Real billing/token attribution.
+NG-005: User accounts or authentication.
+NG-006: Public multi-user backend ranking.
+```
 
 ---
 
-## 6. Core User Flow
-
-Happy path:
-
-1. User opens Coqid-game.
-2. Dashboard shows installed/sample plugins.
-3. User clicks **Run Survival Check**.
-4. Each plugin receives a survival score.
-5. Plugins are grouped into Safe, Reminder Recommended, and Deletion Recommended.
-6. User views weekly and monthly leaderboard.
-
-Final visible result:
-A ranked plugin survival dashboard with clear deletion recommendations and leaderboard.
-
----
-
-## 7. Functional Requirements
+## 6. Functional Requirements
 
 | ID | Requirement | Priority | Test Required |
 |---|---|---:|---|
-| FR-001 | Display plugin/skill list from mock/local data | P0 | YES |
-| FR-002 | Calculate deterministic survival score for each plugin | P0 | YES |
-| FR-003 | Mark low-value plugins as Deletion Recommended | P0 | YES |
-| FR-004 | Mark useful but forgotten plugins as Reminder Recommended | P0 | YES |
-| FR-005 | Display weekly and monthly leaderboard sorted by rank | P0 | YES |
-| FR-006 | Show safe empty state when no plugin data exists | P0 | YES |
-| FR-007 | Show controlled error/fallback for malformed data | P0 | YES |
-| FR-008 | Never delete plugins automatically | P0 | YES |
+| FR-001 | CLI exposes help output with available commands | P0 | YES |
+| FR-002 | `analyze` reads local JSON plugin usage data | P0 | YES |
+| FR-003 | `analyze` calculates deterministic survival scores | P0 | YES |
+| FR-004 | `analyze` marks low-value plugins as `DELETE_RECOMMENDED` | P0 | YES |
+| FR-005 | `analyze` marks forgotten but useful plugins as `REMIND` | P0 | YES |
+| FR-006 | `leaderboard` prints weekly or monthly rankings | P0 | YES |
+| FR-007 | CLI handles missing file, empty data, and invalid JSON safely | P0 | YES |
+| FR-008 | CLI never deletes plugins/skills in MVP | P0 | YES |
+| FR-009 | CLI supports machine-readable JSON output option | P1 | YES |
+| FR-010 | CLI can show detailed reason for each recommendation | P1 | YES |
 
 ---
 
-## 8. Non-Functional Requirements
+## 7. CLI Commands
 
-| ID | Requirement | Target | Verification |
-|---|---|---|---|
-| NFR-001 | Local run works | documented command starts app | smoke test |
-| NFR-002 | Demo time | under 2 minutes | rehearsal |
-| NFR-003 | Deterministic scoring | same input gives same output | unit test |
-| NFR-004 | No destructive action | no actual deletion path in MVP | static inspection/test |
-| NFR-005 | API-independent demo | mock/local data works without network | smoke test |
+MVP commands:
 
----
-
-## 9. Scoring Model
-
-Survival Score should consider:
-
-- weekly usage count
-- monthly usage count
-- estimated cost level
-- last used date
-- user reminder potential
-- high-cost low-use penalty
-
-Status rules:
-
-```txt
-Score >= 70: SAFE
-40 <= Score < 70: REMINDER_RECOMMENDED
-Score < 40: DELETION_RECOMMENDED
+```bash
+coqid-game --help
+coqid-game analyze --data ./fixtures/plugins.json
+coqid-game analyze --data ./fixtures/plugins.json --format json
+coqid-game leaderboard --period weekly --data ./fixtures/plugins.json
+coqid-game leaderboard --period monthly --data ./fixtures/plugins.json
 ```
 
-The exact formula is defined in DATA_MODEL.md and tested in TEST_MAPPING.md.
+No delete command in MVP.
+
+Forbidden command for MVP:
+
+```bash
+coqid-game delete
+```
 
 ---
 
-## 10. Data Requirement
-
-MVP uses mock/local data.
-
-Persistent data required:
-Optional. localStorage may be used, but core demo must work from bundled sample data.
-
----
-
-## 11. API Requirement
-
-API required for MVP:
-No.
-
-Reason:
-The product can demonstrate value with local/mock plugin usage data.
-
-Future API work:
-- real Codex plugin inventory sync
-- real usage telemetry
-- anonymous leaderboard sync
-
----
-
-## 12. Risks
-
-| ID | Risk | Mitigation |
-|---|---|---|
-| R-001 | Codex plugin usage API may not exist | use mock/local data |
-| R-002 | cost per plugin may be unavailable | label as estimated cost |
-| R-003 | deletion action is dangerous | recommend only, never delete |
-| R-004 | leaderboard requires user data | use anonymous mock data in MVP |
-| R-005 | IP/name risk from survival-game theme | use Coqid-game and avoid direct protected branding |
-
----
-
-## 13. Scope Freeze
-
-Frozen MVP decision:
+## 8. Core User Flow
 
 ```txt
-Coqid-game recommends deletion candidates only.
-It does not delete, uninstall, disable, or modify real plugins.
+Step 1: User runs `coqid-game analyze --data ./fixtures/plugins.json`.
+Step 2: Coqid-game validates the local JSON file.
+Step 3: Coqid-game computes survival scores.
+Step 4: Coqid-game prints a ranked table with status and reasons.
+Step 5: User sees which plugins are SAFE, WATCH, REMIND, or DELETE_RECOMMENDED.
+Step 6: User runs leaderboard command and sees weekly/monthly ranking.
+Final result: User gets deletion recommendations and ranking without any plugin being deleted.
+```
+
+---
+
+## 9. Non-functional Requirements
+
+| ID | Requirement | Priority |
+|---|---|---:|
+| NFR-001 | CLI should run locally with documented commands | P0 |
+| NFR-002 | Demo should complete in under 2 minutes | P0 |
+| NFR-003 | Scoring must be deterministic for the same input | P0 |
+| NFR-004 | No live external API required for MVP | P0 |
+| NFR-005 | Invalid input must return controlled error and non-zero exit code | P0 |
+
+---
+
+## 10. Acceptance Gate
+
+```txt
+[x] CLI command exists
+[x] analyze command works with fixture data
+[x] deletion candidates are recommended but not deleted
+[x] reminder candidates appear
+[x] weekly/monthly leaderboard appears
+[x] invalid data produces controlled error
+[x] P0 tests are mapped
+[x] demo can run in under 2 minutes
 ```

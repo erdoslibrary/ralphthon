@@ -1,183 +1,116 @@
-# SPEC/UI_STATES.md — Coqid-game
+# SPEC/UI_STATES.md — Coqid-game CLI Output States
 
-## 0. UI Decision
+## 0. Purpose
 
-User-facing UI required:
+Coqid-game has no graphical web UI for MVP. This file defines equivalent CLI output states.
+
+---
+
+## 1. UI Decision
 
 ```txt
-YES
-```
-
-Coqid-game is a dashboard product.
-
----
-
-## 1. Required UI States
-
-| State | Required? | Purpose |
-|---|---|---|
-| Initial state | YES | app opened and ready |
-| Empty state | YES | no plugin data |
-| Plugin list state | YES | show contestants/plugins |
-| Scoring/loading state | YES | survival check running |
-| Success state | YES | scores and statuses visible |
-| Deletion recommended state | YES | show candidates for review |
-| Reminder recommended state | YES | show forgotten useful plugins |
-| Leaderboard state | YES | weekly/monthly ranking |
-| Malformed data error state | YES | safe fallback |
-
----
-
-## 2. Initial State
-
-User sees:
-- Coqid-game title
-- short explanation
-- Run Survival Check button
-- plugin contestant list or load sample data action
-
----
-
-## 3. Empty State
-
-Message:
-
-```txt
-No plugins have entered the arena yet. Load sample data to run a survival check.
-```
-
-Actions:
-- Load Sample Plugins
-
----
-
-## 4. Plugin List State
-
-Each plugin card shows:
-- plugin name
-- info button
-- plugin description panel when info button is opened
-- weekly uses
-- monthly uses
-- estimated cost
-- last used date
-- current status area
-
-Visual grouping:
-- This area is labeled as the personal use case / My Case.
-- It must be visually distinct from the global leaderboard area.
-
----
-
-## 5. Scoring State
-
-When user clicks Run Survival Check:
-
-User sees:
-
-```txt
-Running survival check...
-```
-
-Exit:
-- success state
-- error/fallback state
-
-No infinite loading.
-
----
-
-## 6. Success State
-
-User sees:
-- survival score for each plugin
-- SAFE / REMINDER_RECOMMENDED / DELETION_RECOMMENDED status
-- reasons for recommendation
-- weekly/monthly leaderboard
-
----
-
-## 7. Deletion Recommended State
-
-For low-value plugins:
-
-Label:
-
-```txt
-Deletion Recommended
-```
-
-Important copy:
-
-```txt
-Coqid-game only recommends review. It does not delete plugins automatically.
-```
-
-Actions:
-- Mark as Reviewed
-- Keep for Now
-- Add to Cleanup List
-
-No actual deletion action.
-
----
-
-## 8. Reminder Recommended State
-
-For useful but forgotten plugins:
-
-Label:
-
-```txt
-Reminder Recommended
-```
-
-Copy:
-
-```txt
-This plugin may still be useful. Try using it again before removing it.
+Graphical UI required: NO
+CLI output states required: YES
+Reason: User requested plugin/CLI-based workflow.
 ```
 
 ---
 
-## 9. Leaderboard State
+## 2. CLI Output States
 
-Tabs:
-- Weekly
-- Monthly
-
-Leaderboard rows:
-- rank
-- plugin name
-- score
-- badge
-- plugin reference URL
-
-Badges:
-- Most Used
-- Most Efficient
-- Most Endangered
-
-Visual grouping:
-- This area is labeled as the worldwide case / Global Arena.
-- It uses anonymous sample rankings and must not imply live production telemetry.
+| State ID | State | Required? | Related AC | Test Required |
+|---|---|---:|---|---|
+| CLI-STATE-001 | Help output | YES | AC-001 | YES |
+| CLI-STATE-002 | Initial analysis output | YES | AC-002 | YES |
+| CLI-STATE-003 | Survival report output | YES | AC-003/AC-004/AC-005 | YES |
+| CLI-STATE-004 | Deletion recommendation output | YES | AC-004/AC-008 | YES |
+| CLI-STATE-005 | Reminder candidate output | YES | AC-005 | YES |
+| CLI-STATE-006 | Leaderboard output | YES | AC-006 | YES |
+| CLI-STATE-007 | Invalid input error output | YES | AC-007 | YES |
+| CLI-STATE-008 | Demo-ready fixture output | YES | AC-009 | YES |
 
 ---
 
-## 10. Error / Fallback State
+## 3. Required Output Sections
 
-If data is malformed:
+Analyze command should print:
 
 ```txt
-Some plugin data could not be scored. Load sample data or check the input format.
+Coqid-game Survival Report
+Summary
+Plugin Rankings
+Deletion Recommendations
+Reminder Candidates
+Safety Notice: No plugins were deleted.
 ```
 
-The app must not crash.
+Leaderboard command should print:
+
+```txt
+Coqid-game Leaderboard
+Period: weekly/monthly
+Rank | Plugin | Usage | Survival Score | Status
+```
+
+Error output should print:
+
+```txt
+Error: [controlled message]
+Hint: [how to fix]
+Exit code: non-zero
+```
 
 ---
 
-## 11. Demo-Ready State
+## 4. Output Copy Rules
 
-The app must start with deterministic sample data or a visible Load Sample Data button.
+Required safety copy:
 
-Demo must be possible in under 2 minutes.
+```txt
+Recommendation only. Coqid-game does not delete plugins automatically.
+```
+
+Forbidden misleading copy:
+
+```txt
+Executed deletion
+Plugin removed
+Purge complete
+```
+
+---
+
+## 5. CLI State Flow
+
+```txt
+Help
+  -> Analyze command
+  -> Data validation
+  -> Survival report
+  -> Deletion recommendations / Reminder candidates
+  -> Leaderboard command
+  -> Controlled error demo
+```
+
+Failure flow:
+
+```txt
+Command
+  -> Invalid data / missing file / bad period
+  -> Controlled error output
+  -> Non-zero exit code
+```
+
+---
+
+## 6. CLI State Tests
+
+```txt
+[x] help output includes analyze and leaderboard
+[x] analyze output includes survival report
+[x] analyze output includes DELETE_RECOMMENDED candidate
+[x] analyze output includes REMIND candidate
+[x] analyze output includes no-delete safety notice
+[x] leaderboard output includes sorted ranks
+[x] invalid data output includes controlled error and non-zero exit
+```

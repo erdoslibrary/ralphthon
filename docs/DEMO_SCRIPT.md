@@ -1,166 +1,190 @@
-# docs/DEMO_SCRIPT.md — Coqid-game
+# docs/DEMO_SCRIPT.md — Coqid-game CLI Demo
 
-## 0. Demo Goal
+## 0. Purpose
 
-In under 2 minutes, show that Coqid-game can help Codex users identify which plugins are safe, forgotten, or deletion recommended using survival scores and leaderboards.
-
----
-
-## 1. One-Line Pitch
-
-Coqid-game is a Codex plugin survival dashboard that scores installed plugins and recommends which low-value plugins should be reviewed for deletion without deleting anything automatically.
+Define the under-2-minute terminal demo for Coqid-game.
 
 ---
 
-## 2. Demo Flow
-
-### Presenter Script
-
-Opening:
+## 1. Demo Status
 
 ```txt
-안녕하세요. 저희 팀은 Codex 플러그인 관리를 survival game으로 만들었습니다.
-설치만 해두고 안 쓰는 플러그인, 다들 있으시죠?
-Coqid-game이 그 플러그인들을 심사합니다.
+Document status: FINAL
+Demo readiness: PASS
+Interface: CLI
+Web UI: NO
+Validator decision: PASS
 ```
 
-Survival Check:
+---
+
+## 2. Demo Goal
 
 ```txt
-Run Survival Check를 누르면 주간 사용량, 월간 사용량, 비용, 마지막 사용일을 조합해 생존 점수를 계산합니다.
-70점 이상은 Safe, 40~69점은 달고나 미션, 40점 미만은 삭제 검토 권고입니다.
+In under 2 minutes, show that a Codex user can analyze local plugin/skill usage data and receive deletion recommendations, reminder candidates, and weekly/monthly rankings without deleting anything.
 ```
 
-Leaderboard:
+---
+
+## 3. One-Line Pitch
 
 ```txt
-Global Arena는 주간/월간 생존 순위를 보여줍니다.
-1위는 황금 테두리로 강조되고, Survivor, Monthly Champion, Eliminated 같은 뱃지가 붙습니다.
+We built Coqid-game, a CLI plugin assistant that ranks Codex plugins and recommends which low-value plugins should be deleted or remembered.
 ```
 
-Closing:
+---
 
-```txt
-Coqid-game은 유용한 것은 살리고, 잊힌 것은 리마인드하고, 불필요한 것은 검토 대상으로 표시합니다.
-실제 삭제는 없습니다. 선택은 개발자가 합니다.
+## 4. Required Commands
+
+```bash
+# Help
+node cli/coqid-game.js --help
+
+# Analyze
+node cli/coqid-game.js analyze --data ./fixtures/plugins.json
+
+# Weekly leaderboard
+node cli/coqid-game.js leaderboard --period weekly --data ./fixtures/plugins.json
+
+# Monthly leaderboard
+node cli/coqid-game.js leaderboard --period monthly --data ./fixtures/plugins.json
+
+# Invalid input demo
+node cli/coqid-game.js analyze --data ./fixtures/invalid.json
 ```
 
-### Step 1: Open Coqid-game
+---
 
-Expected:
-Dashboard loads with sample plugin contestants.
+## 5. Demo Flow
 
-### Step 2: Show plugin list
+### Step 1: Show CLI entry point
 
-Show:
-- plugin name
-- info button and plugin description
-- weekly uses
-- monthly uses
-- estimated cost
-- last used
+Command:
 
-Point out:
-- My Case is the user's local plugin survival board.
-- Global Arena is the worldwide-style anonymous sample leaderboard.
-
-### Step 3: Run Survival Check
-
-Click:
-
-```txt
-Run Survival Check
-```
-
-Expected:
-Each plugin receives score and status.
-
-### Step 4: Show recommendations
-
-Show three categories:
-
-```txt
-SAFE
-REMINDER_RECOMMENDED
-DELETION_RECOMMENDED
-```
-
-Say:
-
-```txt
-Coqid-game only recommends deletion review. It never deletes plugins automatically.
-```
-
-For the deletion-recommended plugin, click one review-only action:
-
-```txt
-Add to Cleanup List
+```bash
+node cli/coqid-game.js --help
 ```
 
 Expected:
-The app records a local manual-review note and does not change, delete, disable, or uninstall any plugin.
+
+```txt
+Help output shows analyze and leaderboard commands.
+```
+
+Related AC: AC-001
+
+---
+
+### Step 2: Run survival analysis
+
+Command:
+
+```bash
+node cli/coqid-game.js analyze --data ./fixtures/plugins.json
+```
+
+Expected:
+
+```txt
+Terminal prints Coqid-game Survival Report with plugin rankings, scores, statuses, and reasons.
+```
+
+Related AC: AC-002, AC-003, AC-004, AC-005
+
+---
+
+### Step 3: Point out deletion recommendations
+
+Expected visible output:
+
+```txt
+DELETE_RECOMMENDED candidates are shown with reasons.
+Safety notice says no plugins were deleted.
+```
+
+Related AC: AC-004, AC-008
+
+---
+
+### Step 4: Point out reminder candidates
+
+Expected visible output:
+
+```txt
+REMIND candidates are shown for forgotten but useful plugins.
+```
+
+Related AC: AC-005
+
+---
 
 ### Step 5: Show leaderboard
 
-Show weekly and monthly leaderboard with plugin reference URLs.
+Command:
 
-Say:
-
-```txt
-The left side is my local use case. The right side is the worldwide-style comparison board, powered by sample data for the MVP.
+```bash
+node cli/coqid-game.js leaderboard --period weekly --data ./fixtures/plugins.json
 ```
 
-### Step 6: Show fallback/edge case
+Expected:
 
-Show empty or malformed data state.
+```txt
+Weekly leaderboard is sorted and visible.
+```
+
+Related AC: AC-006
+
+---
+
+### Step 6: Show controlled failure
+
+Command:
+
+```bash
+node cli/coqid-game.js analyze --data ./fixtures/invalid.json
+```
 
 Expected:
-The app does not crash.
+
+```txt
+CLI prints controlled error and exits non-zero; no crash.
+```
+
+Related AC: AC-007
 
 ---
 
-## 3. Demo Data
+## 6. Closing Sentence
 
-Demo data must include:
-- one safe plugin
-- one reminder recommended plugin
-- one deletion recommended plugin
-- one weekly leaderboard winner
-- one monthly leaderboard winner
+```txt
+Coqid-game does not delete anything automatically. It gives Codex users a clear, testable survival ranking so they can decide which plugins to keep, remember, or remove.
+```
 
 ---
 
-## 4. Closing Sentence
+## 7. Fallback Demo
 
-Coqid-game turns plugin cleanup into a survival ranking system, helping Codex users keep useful tools, rediscover forgotten ones, and review low-value plugins without destructive automation.
+If the installed binary command is not available, use runtime command equivalent:
 
----
+```bash
+node cli/coqid-game.js analyze --data ./fixtures/plugins.json
+```
 
-## 5. Fallback Demo
+Fallback still must show:
 
-If live integration is unavailable:
-Use bundled sample data.
+```txt
+- analysis output
+- deletion recommendations
+- reminder candidates
+- leaderboard
+- invalid data handling
+```
 
-If cloud deployment fails:
-Use local demo.
+## 8. Rehearsal Evidence
 
-If scoring fails:
-Show validation report and known failed case.
-
----
-
-## 6. Rehearsal Evidence
-
-Date: 2026-05-30
-
-Result: PASS_LOCAL
-
-Evidence:
-- Browser rehearsal at `http://127.0.0.1:4173`
-- Run Survival Check displayed Safe, Reminder Recommended, and Deletion Recommended
-- Dalgona mission copy displayed on reminder card
-- Expanded leaderboard badges displayed in Global Arena
-- Add to Cleanup List displayed local review note
-- Empty Demo displayed safe empty state
-- Malformed Demo displayed controlled fallback state
-- Browser console errors: 0
+```txt
+Command: /usr/bin/time -p npm run smoke
+Result: PASS
+Elapsed: real 2.97 seconds
+Evidence location: VALIDATION/VALIDATION_REPORT.md V-004
+```

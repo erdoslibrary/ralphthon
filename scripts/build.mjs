@@ -1,8 +1,22 @@
-import { cp, mkdir, rm } from "node:fs/promises";
+import { access } from "node:fs/promises";
 
-await rm("dist", { recursive: true, force: true });
-await mkdir("dist", { recursive: true });
-await cp("index.html", "dist/index.html");
-await cp("src", "dist/src", { recursive: true });
+const requiredFiles = [
+  "cli/coqid-game.js",
+  "src/cli.js",
+  "src/dataLoader.js",
+  "src/scoring.js",
+  "src/formatters.js",
+  "src/errors.js",
+  "fixtures/plugins.json",
+  "fixtures/invalid.json",
+  "fixtures/malformed.json",
+  "fixtures/empty.json"
+];
 
-console.log("Build complete: dist/");
+await Promise.all(requiredFiles.map((file) => access(file)));
+await import("../src/cli.js");
+await import("../src/dataLoader.js");
+await import("../src/scoring.js");
+await import("../src/formatters.js");
+
+console.log("Build check passed: CLI modules and fixtures are present.");

@@ -1,56 +1,60 @@
-# TEST/COVERAGE_REPORT.md — Coqid-game
+# TEST/COVERAGE_REPORT.md — Coqid-game CLI
 
-## 0. Coverage Focus
+## 0. Purpose
 
-Coverage priority is behavior coverage, not vanity line coverage.
-
----
-
-## 1. Required Behavior Coverage
-
-| Area | Required? | Status |
-|---|---|---|
-| P0 acceptance criteria | YES | PASS_LOCAL_MVP |
-| scoring engine | YES | PASS |
-| status classifier | YES | PASS |
-| deletion recommendation only | YES | PASS |
-| reminder recommendation | YES | PASS |
-| leaderboard sorting | YES | PASS |
-| empty state | YES | PASS |
-| malformed data fallback | YES | PASS |
-| local run/smoke | YES | PASS |
-| actual deletion path | MUST NOT EXIST | PASS_STATIC_INSPECTION |
-| review-only deletion actions | YES | PASS_STATIC_AND_BROWSER |
-| personal/global visual separation | YES | PASS_SMOKE_AND_BROWSER |
-| plugin info descriptions | YES | PASS_UNIT_SMOKE_AND_BROWSER |
-| Global Arena plugin URLs | YES | PASS_UNIT_SMOKE_AND_BROWSER |
-| dalgona reminder mission copy | YES | PASS_UNIT_AND_BROWSER |
-| expanded leaderboard badges | YES | PASS_UNIT_AND_BROWSER |
-| leaderboard tab fade transition | YES | PASS_BROWSER |
+Track whether the important CLI behaviors are actually validated.
 
 ---
 
-## 2. Coverage Gate
-
-Final READY requires:
+## 1. Coverage Summary
 
 ```txt
-[x] all automated P0 AC covered
-[x] scoring tests pass
-[x] leaderboard tests pass
-[x] empty/malformed data tests pass
-[x] no actual deletion action exists
-[x] local smoke test passes
-[x] demo rehearsal passes
+Acceptance Criteria Coverage: PASS
+Core CLI Demo Coverage: PASS
+Failure Case Coverage: PASS
+No-deletion Safety Coverage: PASS
+Regression Coverage: PASS
+Raw Line Coverage: NOT_MEASURED
 ```
 
 ---
 
-## 3. Known Coverage Gaps
+## 2. Required Behavior Coverage
 
-| Gap | Severity | Mitigation |
-|---|---|---|
-| real Codex API not covered | accepted | out of MVP |
-| real cross-user leaderboard not covered | accepted | out of MVP |
-| exact token/coin cost not covered | accepted | estimated cost only |
-| `back` branch integration not validated | medium | keep out of local MVP readiness until contracts and validation are updated |
+| Area | Required? | Test | Status |
+|---|---:|---|---|
+| CLI help output | YES | TEST-001 | PASS |
+| Valid analyze command | YES | TEST-002 | PASS |
+| Deterministic scoring | YES | TEST-003 | PASS |
+| Delete recommendation logic | YES | TEST-004 | PASS |
+| Reminder logic | YES | TEST-005 | PASS |
+| Weekly leaderboard | YES | TEST-006 | PASS |
+| Monthly leaderboard | YES | TEST-007 | PASS |
+| Missing file error | YES | TEST-008 | PASS |
+| Invalid JSON/schema error | YES | TEST-009 | PASS |
+| No actual deletion | YES | TEST-010 | PASS |
+| Under-2-minute demo | YES | TEST-011 | PASS |
+| Package excludes local runtime state | YES | PACK-001 | PASS |
+
+---
+
+## 3. Critical Coverage Gaps
+
+| Gap ID | Gap | Severity | Required Action |
+|---|---|---|---|
+| CG-001 | Runtime/test command not selected yet | High | CLOSED: Node.js/npm documented |
+| CG-002 | No-deletion safety not validated yet | Critical | CLOSED: `tests/noDeletion.test.js` PASS |
+| CG-003 | Fixture data not created yet | High | CLOSED: fixtures created |
+
+---
+
+## 4. Final Coverage Gate
+
+```txt
+[x] AC-001 through AC-009 covered
+[x] invalid input covered
+[x] no-deletion safety covered
+[x] demo flow covered
+[x] build/run covered or not applicable
+[x] no critical coverage gap remains
+```

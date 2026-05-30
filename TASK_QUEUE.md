@@ -1,40 +1,45 @@
-# TASK_QUEUE.md — Coqid-game
+# TASK_QUEUE.md — Coqid-game CLI
 
-## 0. Current Phase
+## 0. Purpose
 
-Current phase: INITIAL_VALIDATION_PASSED_WITH_MOCK_DATA
-
-Implementation gate: OPEN_WITH_MOCK_DATA
+Task sequencing for the CLI-first Coqid-game MVP.
 
 ---
 
-## 1. Task Queue
+## 1. Active Task Queue
 
-| ID | Task | Owner | Status | Depends On | Validation |
-|---|---|---|---|---|---|
-| T-001 | Create mock plugin usage data | Builder | VALIDATED | DATA_MODEL.md | npm test / npm run smoke |
-| T-002 | Implement scoring engine | Builder | VALIDATED | T-001 | npm test |
-| T-003 | Implement status classifier | Builder | VALIDATED | T-002 | npm test |
-| T-004 | Implement leaderboard builder | Builder | VALIDATED | T-002 | npm test |
-| T-005 | Build dashboard UI | Builder | VALIDATED | T-001,T-002,T-003 | npm run build / npm run smoke |
-| T-006 | Add empty/malformed data fallback | Builder | VALIDATED | T-001 | npm test |
-| T-007 | Add deletion recommendation UI only | Builder | VALIDATED | T-003 | npm test / npm run smoke |
-| T-008 | Add reminder recommendation UI | Builder | VALIDATED | T-003 | npm test |
-| T-009 | Add weekly/monthly leaderboard UI | Builder | VALIDATED | T-004 | npm test |
-| T-010 | Write demo script | Packager | VALIDATED | T-005 | browser rehearsal |
-| T-011 | Document run/test/build commands | Packager | VALIDATED | repo setup | npm run smoke |
-| T-012 | Final validation | Validator | VALIDATED_LOCAL_MVP | all P0 tasks | validation report V-005 |
-| T-013 | Coordinate `back` branch integration proposal | Coordinator | TODO | API_CONTRACT.md | document review before merge |
-| T-014 | Add review-only actions for deletion recommendations | Builder | VALIDATED | T-007,UI_STATES.md | npm test / npm run build / npm run smoke / browser rehearsal |
-| T-015 | Apply survival-game visual theme and separate personal/global views | Builder | VALIDATED | T-005,T-009,UI_STATES.md | npm test / npm run build / npm run smoke / browser rehearsal V-006 |
-| T-016 | Add plugin info panels and Global Arena URLs | Builder | VALIDATED | T-005,T-009,DATA_MODEL.md,UI_STATES.md | npm test / npm run build / npm run smoke / browser rehearsal V-007 |
-| T-017 | Apply UI/UX proposal from docs/UI_UX_PROPOSAL.md | Builder | VALIDATED | T-015,T-016 | npm test / npm run build / npm run smoke / browser rehearsal V-008 |
+| Task ID | Title | Owner | Phase | Status | Related AC | Validation |
+|---|---|---|---|---|---|---|
+| T-001 | Select CLI runtime and package manager | Coordinator | PHASE_0 | DONE | AC-001 | Node.js/npm documented in DEPLOYMENT.md |
+| T-002 | Create CLI project skeleton | Builder | PHASE_6 | DONE | AC-001 | `npm run smoke` PASS |
+| T-003 | Create fixture data files | Builder/Test Engineer | PHASE_6 | DONE | AC-002 | `fixtures/plugins.json`, `invalid.json`, `empty.json` |
+| T-004 | Implement data loader and schema validator | Builder | PHASE_6 | DONE | AC-002/AC-007 | `npm test` PASS |
+| T-005 | Implement survival scoring engine | Builder | PHASE_6 | DONE | AC-003 | `tests/scoring.test.js` PASS |
+| T-006 | Implement recommendation engine | Builder | PHASE_6 | DONE | AC-004/AC-005 | `tests/scoring.test.js`, `tests/cli.test.js` PASS |
+| T-007 | Implement leaderboard engine | Builder | PHASE_6 | DONE | AC-006 | `tests/scoring.test.js`, `tests/cli.test.js` PASS |
+| T-008 | Implement analyze CLI command | Builder | PHASE_6 | DONE | AC-002~AC-005 | `tests/cli.test.js` PASS |
+| T-009 | Implement leaderboard CLI command | Builder | PHASE_6 | DONE | AC-006 | weekly/monthly CLI tests PASS |
+| T-010 | Implement controlled error handling | Builder | PHASE_6 | DONE | AC-007 | invalid/missing/empty data tests PASS |
+| T-011 | Add no-deletion safety inspection | Test Engineer | PHASE_7 | DONE | AC-008 | `tests/noDeletion.test.js` PASS |
+| T-012 | Run demo rehearsal | Packager | PHASE_8 | DONE | AC-009 | `npm run smoke` under 2 minutes |
+| T-FINAL | Final validation | Validator | PHASE_9 | DONE | All P0 | FINAL_CHECKLIST.md PASS |
 
 ---
 
-## 2. Rules
+## 2. Forbidden Tasks for MVP
 
-- Do not implement actual deletion.
-- Do not require real Codex API.
-- Do not add auth/backend unless explicitly moved out of MVP.
-- Stop feature work when P0 dashboard + scoring + recommendation + leaderboard work.
+```txt
+- implement web dashboard
+- implement actual plugin deletion
+- implement user authentication
+- implement live Codex API sync
+- implement cloud leaderboard backend
+```
+
+---
+
+## 3. Implementation Rule
+
+```txt
+No task can be marked DONE until Validator records PASS evidence in VALIDATION/VALIDATION_REPORT.md.
+```

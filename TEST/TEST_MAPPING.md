@@ -1,51 +1,71 @@
-# TEST/TEST_MAPPING.md — Coqid-game
+# TEST/TEST_MAPPING.md — Coqid-game CLI
 
 ## 0. Purpose
 
-Map Coqid-game acceptance criteria to concrete tests or validation steps.
+Map Coqid-game acceptance criteria to concrete CLI tests, commands, and evidence.
 
 ---
 
-## 1. Mapping Table
+## 1. Core Mapping Table
 
-| AC | Behavior | Test ID | Type | Status |
-|---|---|---|---|---|
-| AC-001 | dashboard loads with plugin data | TEST-001 | smoke/integration | PASS_INITIAL |
-| AC-002 | deterministic scoring | TEST-002 | unit | PASS |
-| AC-003 | low-value plugin deletion recommended | TEST-003 | unit/integration | PASS |
-| AC-004 | forgotten useful plugin reminder recommended | TEST-004 | unit/integration | PASS |
-| AC-005 | high-value plugin safe | TEST-005 | unit | PASS |
-| AC-006 | weekly leaderboard sorted | TEST-006 | unit/integration | PASS |
-| AC-007 | monthly leaderboard sorted | TEST-007 | unit/integration | PASS |
-| AC-008 | empty data safe state | TEST-008 | integration/smoke | PASS |
-| AC-009 | malformed data safe fallback | TEST-009 | unit/integration | PASS |
-| AC-010 | no actual deletion | TEST-010 / TEST-013 | static/integration/browser | PASS |
-| AC-011 | demo under 2 minutes | TEST-011 | browser rehearsal | PASS_LOCAL |
-| AC-012 | app runs without live Codex API | TEST-012 | smoke | PASS_INITIAL |
-| UI-001 | plugin info panels visible | TEST-014 | unit/smoke/browser | PASS |
-| UI-002 | global arena plugin URLs visible | TEST-015 | unit/smoke/browser | PASS |
-| UI-003 | dalgona reminder copy visible | TEST-016 | unit/smoke/browser | PASS |
-| UI-004 | expanded leaderboard badges visible | TEST-017 | unit/smoke/browser | PASS |
+| AC ID | Related Req | Priority | Test ID | Type | Test File/Step | Command | Expected Result | Evidence | Status |
+|---|---|---:|---|---|---|---|---|---|---|
+| AC-001 | FR-001 | P0 | TEST-001 | CLI_SMOKE | `tests/cli.test.js` | `node cli/coqid-game.js --help` | help shows analyze/leaderboard | VALIDATION_REPORT.md V-001 | PASS |
+| AC-002 | FR-002 | P0 | TEST-002 | CLI_INTEGRATION | `tests/cli.test.js` | `node cli/coqid-game.js analyze --data fixtures/plugins.json` | valid data loaded | VALIDATION_REPORT.md V-001 | PASS |
+| AC-003 | FR-003 | P0 | TEST-003 | UNIT | `tests/scoring.test.js` | `npm test` | deterministic score | VALIDATION_REPORT.md V-001 | PASS |
+| AC-004 | FR-004 | P0 | TEST-004 | UNIT/CLI | `tests/scoring.test.js`, `tests/cli.test.js` | `npm test` | low-value plugin marked DELETE_RECOMMENDED | VALIDATION_REPORT.md V-001 | PASS |
+| AC-005 | FR-005 | P0 | TEST-005 | UNIT/CLI | `tests/scoring.test.js`, `tests/cli.test.js` | `npm test` | forgotten useful plugin marked REMIND | VALIDATION_REPORT.md V-001 | PASS |
+| AC-006 | FR-006 | P0 | TEST-006/007 | UNIT/CLI | `tests/scoring.test.js`, `tests/cli.test.js` | `node cli/coqid-game.js leaderboard --period weekly/monthly --data fixtures/plugins.json` | sorted leaderboard | VALIDATION_REPORT.md V-001 | PASS |
+| AC-007 | FR-007 | P0 | TEST-008/009 | CLI_ERROR | `tests/cli.test.js`, `tests/validation.test.js` | `npm test` | controlled errors for invalid schema, malformed JSON, missing file, and empty data | VALIDATION_REPORT.md V-001 | PASS |
+| AC-008 | FR-008 | P0 | TEST-010 | STATIC/INTEGRATION | `tests/noDeletion.test.js` | `npm test` | no destructive delete behavior | VALIDATION_REPORT.md V-001 | PASS |
+| AC-009 | NFR-002 | P0 | TEST-011 | SMOKE_DEMO | `scripts/smoke.mjs` | `/usr/bin/time -p npm run smoke` | demo path under 2 min | VALIDATION_REPORT.md V-002 | PASS |
 
 ---
 
-## 2. Proposed Test Files
+## 2. Command Mapping
 
-```txt
-tests/scoring.test.js
-tests/leaderboard.test.js
-tests/validation.test.js
-tests/noDeletion.test.js
-scripts/smoke.mjs
+```bash
+# Install
+npm install
+
+# Full test
+npm test
+
+# CLI help
+node cli/coqid-game.js --help
+
+# Analyze
+node cli/coqid-game.js analyze --data ./fixtures/plugins.json
+
+# Leaderboard weekly
+node cli/coqid-game.js leaderboard --period weekly --data ./fixtures/plugins.json
+
+# Leaderboard monthly
+node cli/coqid-game.js leaderboard --period monthly --data ./fixtures/plugins.json
+
+# Invalid input
+node cli/coqid-game.js analyze --data ./fixtures/invalid.json
 ```
 
 ---
 
-## 3. Commands
+## 3. Destructive Behavior Inspection
 
-```bash
-npm test
-npm run build
-npm run dev
-npm run smoke
+Static inspection should check for destructive operations tied to plugin paths.
+
+Examples to inspect:
+
+```txt
+rm -rf
+fs.rm
+fs.unlink
+deletePlugin
+removePlugin
+purge
+```
+
+Expected result:
+
+```txt
+No MVP command performs destructive deletion of plugin/skill files or configs.
 ```

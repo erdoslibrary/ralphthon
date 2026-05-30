@@ -1,41 +1,41 @@
-# VALIDATION/RISK_REGISTER.md — Coqid-game
+# VALIDATION/RISK_REGISTER.md — Coqid-game CLI
 
-## 0. Active Risks
+## 0. Purpose
 
-| ID | Risk | Severity | Status | Mitigation |
-|---|---|---|---|---|
-| R-001 | Real Codex plugin usage API may be unavailable | High | ACCEPTED | use mock/local data |
-| R-002 | Plugin-level exact token/coin cost may be unavailable | High | ACCEPTED | use estimated cost label |
-| R-003 | Actual deletion is destructive | Critical | MITIGATED | recommendation only; no delete action; review actions are local notes only |
-| R-004 | Cross-user leaderboard needs privacy/backend | High | DEFERRED | use anonymous sample data |
-| R-005 | Name/theme may imply protected IP | Medium | MITIGATING | use Coqid-game branding, avoid direct protected claims |
-| R-006 | Demo depends on local run | Medium | MITIGATED | documented commands; smoke and browser rehearsal passed |
-| R-007 | Team `back` branch may add API dependency | Medium | OPEN | require contract/test/risk updates before merge |
-| R-008 | Sample plugin URLs may be mistaken for live plugin registry links | Low | MITIGATED | use example.com sample URLs and document mock/local MVP |
+Track risks for the CLI-first Coqid-game MVP.
 
 ---
 
-## 1. Risk Rules
+## 1. Active Risks
 
-Critical MVP rule:
+| Risk ID | Title | Category | Severity | Probability | Status | Mitigation |
+|---|---|---|---|---|---|---|
+| R-001 | Runtime/package manager not selected | BUILD | Medium | Medium | CLOSED | Node.js/npm selected and documented |
+| R-002 | Web implementation drift | SCOPE_CREEP | High | Medium | MITIGATED | CLI-only implementation; no web server required |
+| R-003 | Accidental destructive deletion | SAFETY | Critical | Low | MITIGATED | No destructive command; static inspection passes |
+| R-004 | Real Codex usage API unavailable | EXTERNAL_API | High | High | MITIGATED | Local fixture data for MVP |
+| R-005 | Plugin-level cost unavailable | DATA | High | High | MITIGATED | Use estimatedCost fixture field |
+| R-006 | Leaderboard privacy concerns | PRIVACY | Medium | Medium | MITIGATED | Local/sample anonymous data only |
+| R-007 | Demo command not linked globally | RUNTIME | Medium | Medium | ACCEPTED | Local `node cli/coqid-game.js` fallback documented |
+
+---
+
+## 2. Critical Risk Policy
 
 ```txt
-Coqid-game must not delete, uninstall, disable, or modify real plugins.
+Actual plugin deletion must not be implemented in MVP.
+If any destructive operation appears, final readiness is BLOCKED.
 ```
-
-If any deletion action is added, final readiness is blocked.
 
 ---
 
-## 2. Accepted Risks
+## 3. Mitigations Required Before Final Demo
 
-Accepted for MVP:
-- mock/local data instead of real Codex telemetry
-- estimated cost instead of exact token/coin accounting
-- sample leaderboard instead of production cross-user leaderboard
-- survival-game-inspired colors and shapes without claiming official affiliation
-
-Not accepted:
-- automatic deletion
-- silent modification of user plugins
-- live API-only demo
+```txt
+[x] CLI-first architecture confirmed
+[x] web dashboard absent or explicitly deferred
+[x] no delete/remove/purge command exists
+[x] local fixture data exists
+[x] invalid input tests pass
+[x] local run command documented
+```

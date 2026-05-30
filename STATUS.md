@@ -1,75 +1,99 @@
-# STATUS.md — Coqid-game
+# STATUS.md — Coqid-game CLI
 
-## 0. Current Status
+## 0. Purpose
 
-Project: Coqid-game
+Live control panel for the Coqid-game autonomous harness.
 
-Current phase: FINAL_VALIDATION_PASSED_LOCAL_MVP
+---
 
-Implementation gate: OPEN_WITH_MOCK_DATA
+## 1. Current State
 
+```txt
+Product: Coqid-game
+Current phase: PHASE_9_FINAL_FREEZE
+Product type: CLI tool
+Implementation gate: CLOSED_COMPLETE
+Validation state: PASS
+Demo readiness: READY
+Human intervention required: NO
 Last updated: 2026-05-30
+```
 
 ---
 
-## 1. Product Summary
+## 2. Key Decisions
 
-Coqid-game is a Codex plugin/skill survival dashboard that scores plugins using usage, estimated cost, and recent activity. It recommends low-value plugins for deletion review but never deletes plugins automatically.
-
----
-
-## 2. Key MVP Decisions
-
-| Decision | Value |
-|---|---|
-| Product name | Coqid-game |
-| Actual deletion | NO |
-| Deletion recommendation | YES |
-| Real Codex API required | NO |
-| Data source | Mock/local plugin data |
-| Backend required | NO |
-| Leaderboard | Sample weekly/monthly leaderboard |
-| Demo target | local dashboard under 2 minutes |
+```txt
+Web UI: NO
+CLI-first: YES
+Actual deletion: NO
+Deletion recommendation only: YES
+Backend API: NO for MVP
+Persistent database: NO for MVP
+External Codex API: NO for MVP
+Local/mock fixture data: YES
+```
 
 ---
 
-## 3. Current Risks
+## 3. Commands
 
-| Risk | Status | Mitigation |
-|---|---|---|
-| real usage API uncertain | accepted | mock/local data |
-| exact cost unavailable | accepted | estimated cost label |
-| destructive deletion risk | mitigated | recommendation only |
-| leaderboard privacy | mitigated | anonymous sample data |
+To be finalized after stack selection.
+
+```bash
+# Install
+npm install
+
+# Test
+npm test
+
+# Build/link CLI
+npm run build
+
+# Help
+node cli/coqid-game.js --help
+
+# Analyze
+node cli/coqid-game.js analyze --data ./fixtures/plugins.json
+
+# Leaderboard
+node cli/coqid-game.js leaderboard --period weekly --data ./fixtures/plugins.json
+```
 
 ---
 
-## 4. Next Actions
+## 4. Gate Summary
 
-1. Keep MVP scope aligned with no destructive deletion.
-2. Continue frontend/dashboard work on `main`.
-3. Coordinate backend/integration experiments on `back` without introducing live API dependency into MVP.
-4. Keep final validation evidence current after any future change.
-5. Do not merge `back` API/backend behavior unless contracts and validation are updated first.
+```txt
+Product idea filled: YES
+Ambiguity Score: 0.08
+PRD ready: YES
+Acceptance criteria ready: YES
+CLI contract ready: YES
+Data model ready: YES
+CLI output states ready: YES
+P0 test mapping complete: YES
+Validation evidence recorded: YES
+```
 
 ---
 
-## 4.1 Collaboration Notes
+## 5. Active Risks
 
-| Area | Owner | Branch / Track | Constraint |
+| Risk ID | Summary | Severity | Status |
 |---|---|---|---|
-| dashboard/main MVP | human + agent | main | must preserve mock-data local demo |
-| back/integration exploration | teammate | back | must not block local demo |
-| destructive plugin actions | none | out of MVP | forbidden for MVP |
-
-Coordination rule:
-If `back` introduces API/backend behavior, it must update API_CONTRACT.md, DATA_MODEL.md, TEST_MAPPING.md, VALIDATION/RISK_REGISTER.md, and STATUS.md before merge.
+| R-001 | Runtime/package manager not selected | Medium | CLOSED |
+| R-002 | Web implementation drift | High | MITIGATING |
+| R-003 | Accidental destructive deletion | Critical | MITIGATED |
+| R-004 | Real Codex usage API unavailable | High | MITIGATED by fixture data |
 
 ---
 
-## 5. Final Readiness
+## 6. Next Action
 
-Current readiness: READY_LOCAL_MVP_EXCLUDING_BACK
-
-Reason:
-Local MVP validation passed with mock data. Browser rehearsal confirmed the demo flow, survival-game-inspired visual theme from docs/UI_UX_PROPOSAL.md, dalgona reminder copy, elimination copy, expanded leaderboard badges, My Case / Global Arena separation, plugin info panels, Global Arena plugin URLs, review-only deletion recommendation actions, empty fallback, malformed-data fallback, and no console errors. `back` branch integration remains outside the current ready scope.
+```txt
+Next action: Final handoff.
+Owner: Coordinator + Validator
+Blocked by: NONE
+Required document update: NONE
+```

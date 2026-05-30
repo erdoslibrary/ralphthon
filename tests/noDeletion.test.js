@@ -1,51 +1,40 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFile, readdir } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 
-const bannedDeletionPatterns = [
-  /\buninstall\b/i,
+const blockedPatterns = [
+  /\bfs\.rm\b/,
+  /\bfs\.unlink\b/,
+  /\brm\s+-rf\b/,
   /\bdeletePlugin\b/,
   /\bremovePlugin\b/,
-  /\bdisablePlugin\b/,
-  /\bexec\s*\(/,
-  /\bunlink\s*\(/,
-  /\brm\s+-/
+  /\bpurgePlugin\b/
 ];
 
-test("MVP source contains no actual plugin deletion path", async () => {
-  const files = await listFiles("src");
-  const checked = [];
+test("source code does not contain destructive plugin deletion behavior", async () => {
+  const files = [
+    ...await listSourceFiles("cli"),
+    ...await listSourceFiles("src")
+  ];
 
   for (const file of files) {
-    const content = await readFile(file, "utf8");
-    checked.push(file);
-    for (const pattern of bannedDeletionPatterns) {
-      assert.equal(pattern.test(content), false, `${pattern} found in ${file}`);
+    const contents = await readFile(file, "utf8");
+    for (const pattern of blockedPatterns) {
+      assert.doesNotMatch(contents, pattern, `${file} matched ${pattern}`);
     }
   }
-
-  assert.ok(checked.length > 0);
 });
 
-test("deletion recommendation UI exposes review-only actions", async () => {
-  const app = await readFile("src/app.js", "utf8");
-
-  assert.match(app, /Mark as Reviewed/);
-  assert.match(app, /Keep for Now/);
-  assert.match(app, /Add to Cleanup List/);
-  assert.match(app, /No deletion action exists/);
-});
-
-async function listFiles(directory) {
+async function listSourceFiles(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
   const files = [];
 
   for (const entry of entries) {
     const path = join(directory, entry.name);
     if (entry.isDirectory()) {
-      files.push(...(await listFiles(path)));
-    } else if (/\.(js|css|html)$/.test(entry.name)) {
+      files.push(...await listSourceFiles(path));
+    } else if (entry.isFile() && path.endsWith(".js")) {
       files.push(path);
     }
   }

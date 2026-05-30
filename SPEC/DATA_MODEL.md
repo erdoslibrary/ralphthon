@@ -1,172 +1,192 @@
-# SPEC/DATA_MODEL.md — Coqid-game
+# SPEC/DATA_MODEL.md — Coqid-game CLI Data Model
 
-## 0. Data Decision
+## 0. Purpose
 
-Persistent data required for MVP:
+Define local data structures used by Coqid-game.
+
+---
+
+## 1. Persistence Decision
 
 ```txt
-NO, optional localStorage only
+Persistent data required: NO for MVP
+Storage strategy: local JSON input file + in-memory computed results
+Database required: NO
+Browser localStorage: NO
 ```
 
 Reason:
-The core demo can run using bundled sample plugin data.
-
----
-
-## 1. Storage Strategy
-
-MVP storage:
 
 ```txt
-Bundled mock data + runtime state
+The CLI MVP can prove value by reading deterministic local fixture data and printing computed recommendations.
 ```
 
-Optional:
+---
+
+## 2. Storage Strategy
 
 ```txt
-localStorage for user-selected filter or demo state
+[x] Local JSON file
+[x] In-memory computed state
+[ ] Browser localStorage
+[ ] Database
+[ ] External API
 ```
 
-No cloud database is required.
-
 ---
 
-## 2. Entity Summary
+## 3. Entities
 
-| Entity | Required? | Purpose |
-|---|---|---|
-| PluginUsage | YES | raw usage/cost/recent activity data |
-| SurvivalScore | YES | calculated score and recommendation |
-| LeaderboardEntry | YES | weekly/monthly ranking row |
-| UserAnonymousProfile | NO/P1 | future cross-user leaderboard |
+### ENT-001: PluginUsageRecord
 
----
+Purpose:
 
-## 3. PluginUsage
+```txt
+Represents one Codex plugin/skill and its local usage/cost signals.
+```
+
+Type definition:
 
 ```ts
-type PluginUsage = {
+type PluginUsageRecord = {
   id: string;
   name: string;
+  category?: string;
   weeklyUses: number;
   monthlyUses: number;
-  estimatedCost: "low" | "medium" | "high";
+  estimatedCost: number;
   lastUsedDaysAgo: number;
-  userRating?: number;
-  description?: string;
-  url?: string;
+  usefulnessSignal: number;
 };
 ```
 
 Validation:
-- id is required
-- name is required
-- weeklyUses >= 0
-- monthlyUses >= 0
-- estimatedCost is low/medium/high
-- lastUsedDaysAgo >= 0
-- userRating, if present, must be 1-5
-- description, if present, must be a non-empty string
-- url, if present, must be an http or https URL
+
+```txt
+id and name must be non-empty strings.
+weeklyUses, monthlyUses, estimatedCost, lastUsedDaysAgo must be numbers >= 0.
+usefulnessSignal must be between 0 and 1.
+```
 
 ---
 
-## 4. SurvivalScore
+### ENT-002: SurvivalResult
+
+Purpose:
+
+```txt
+Represents computed score and recommendation for one plugin.
+```
+
+Type definition:
 
 ```ts
-type SurvivalScore = {
-  pluginId: string;
-  score: number;
-  status: "SAFE" | "REMINDER_RECOMMENDED" | "DELETION_RECOMMENDED";
-  reasons: string[];
+type SurvivalResult = {
+  id: string;
+  name: string;
+  survivalScore: number;
+  status: "SAFE" | "WATCH" | "REMIND" | "DELETE_RECOMMENDED";
+  reason: string;
 };
 ```
 
-Rules:
-- score must be 0-100
-- status must match score threshold
-- reasons must explain the recommendation
-
-Status threshold:
+Validation:
 
 ```txt
-SAFE: score >= 70
-REMINDER_RECOMMENDED: 40 <= score < 70
-DELETION_RECOMMENDED: score < 40
+survivalScore must be between 0 and 100.
+status must be one of the allowed values.
+reason must be non-empty.
 ```
 
 ---
 
-## 5. LeaderboardEntry
+### ENT-003: LeaderboardEntry
+
+Purpose:
+
+```txt
+Represents a weekly or monthly ranking row.
+```
+
+Type definition:
 
 ```ts
 type LeaderboardEntry = {
-  pluginId: string;
-  pluginName: string;
-  pluginUrl?: string;
   rank: number;
+  pluginId: string;
+  name: string;
   period: "weekly" | "monthly";
-  score: number;
-  badge: "MOST_USED" | "MOST_EFFICIENT" | "MOST_ENDANGERED";
+  usageCount: number;
+  survivalScore: number;
+  status: "SAFE" | "WATCH" | "REMIND" | "DELETE_RECOMMENDED";
 };
 ```
 
-Rules:
-- rank starts at 1
-- rows are sorted by score descending unless showing most endangered
-- period must be weekly or monthly
-- pluginUrl is optional and points to a sample plugin reference URL in MVP
+---
+
+## 4. Input Data
+
+| Input ID | Name | Type | Required? | Validation |
+|---|---|---|---:|---|
+| INPUT-001 | data file path | string | YES | file exists |
+| INPUT-002 | plugin usage JSON | object | YES | schema valid |
+| INPUT-003 | period | weekly/monthly | leaderboard only | allowed value |
+| INPUT-004 | format | table/json | NO | allowed value |
 
 ---
 
-## 6. Empty Data Behavior
+## 5. Output Data
 
-If no plugin data exists:
+| Output ID | Name | Type | Required? | Source |
+|---|---|---|---:|---|
+| OUTPUT-001 | survival report | table/json | YES | scoring engine |
+| OUTPUT-002 | deletion recommendations | table/json | YES | recommendation engine |
+| OUTPUT-003 | reminder candidates | table/json | YES | recommendation engine |
+| OUTPUT-004 | leaderboard | table/json | YES | leaderboard engine |
+| OUTPUT-005 | controlled error | text/json | YES for failures | validator/errors |
+
+---
+
+## 6. Demo Fixture
+
+Recommended fixture path:
 
 ```txt
-Show empty state:
-"No plugins have entered the arena yet. Load sample data to run a survival check."
+fixtures/plugins.json
 ```
 
-The app must not crash.
-
----
-
-## 7. Malformed Data Behavior
-
-If plugin data is malformed:
+Minimum fixture must include:
 
 ```txt
-Reject invalid row or show fallback error state.
-Do not crash.
-Do not produce fake deletion recommendation from invalid data.
+- at least 1 SAFE plugin
+- at least 1 WATCH plugin
+- at least 1 REMIND plugin
+- at least 1 DELETE_RECOMMENDED plugin
 ```
 
 ---
 
-## 8. Demo Data
+## 7. Reset Behavior
 
-Demo data required:
-YES
-
-Demo data source:
-Bundled sample data.
-
-Must include examples of:
-- SAFE plugin
-- REMINDER_RECOMMENDED plugin
-- DELETION_RECOMMENDED plugin
-- high-cost low-use plugin
-- leaderboard winner
-- plugin descriptions
-- sample plugin reference URLs
-
----
-
-## 9. Reset Behavior
-
-Demo reset:
-Refresh page or reload bundled sample data.
+```txt
+Demo reset: NOT_REQUIRED
+Reason: CLI reads immutable fixture data and computes results in memory.
+```
 
 Test reset:
-Use deterministic fixtures.
+
+```txt
+Tests use read-only fixtures.
+No persistent state remains after test execution.
+```
+
+---
+
+## 8. Data Risks
+
+| Risk | Mitigation |
+|---|---|
+| malformed JSON crashes CLI | schema validation + controlled error |
+| estimatedCost misunderstood as real billing | label as estimated cost |
+| missing plugin fields | schema error with non-zero exit |
+| delete recommendation confused with actual delete | output copy must say recommendation only |

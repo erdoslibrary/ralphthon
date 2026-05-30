@@ -1,40 +1,28 @@
-# BACKLOG.md — Coqid-game
+# BACKLOG.md — Coqid-game Deferred Scope
 
 ## 0. Purpose
 
-This backlog protects the Coqid-game MVP from scope creep.
+Prevent scope creep during the CLI-first MVP.
 
 ---
 
-## Deferred Features
+## 1. Deferred Features
 
-| ID | Feature | Reason Deferred | Risk if Added Now |
+| ID | Feature | Reason Deferred | Priority Later |
 |---|---|---|---|
-| BL-001 | Real Codex plugin usage API sync | API availability uncertain | blocks demo |
-| BL-002 | Real plugin deletion/uninstall | destructive and unsafe | high risk |
-| BL-003 | Production cross-user leaderboard | needs backend/auth/privacy | high scope |
-| BL-004 | Authentication | not needed for MVP | high scope |
-| BL-005 | Cloud database | not needed for mock demo | deployment risk |
-| BL-006 | Exact token/coin accounting per plugin | may not be available | false claims |
-| BL-007 | Public marketplace ranking | beyond MVP | large backend |
-| BL-008 | Plugin auto-reminder notifications | extra integration | scope creep |
-| BL-009 | Real cost optimization suggestions | needs real telemetry | uncertain data |
+| BL-001 | Actual plugin deletion | Too risky for MVP; recommendation only | P1/P2 |
+| BL-002 | Web dashboard | User wants CLI plugin; web is out of scope | P2 |
+| BL-003 | Real Codex usage API integration | API availability uncertain | P1 |
+| BL-004 | Real token/coin attribution per plugin | Billing data may not be exposed per plugin | P2 |
+| BL-005 | Public weekly/monthly multi-user leaderboard backend | Needs privacy/auth/backend | P2 |
+| BL-006 | Authentication/accounts | Not needed for local CLI MVP | P3 |
+| BL-007 | Cloud deployment | CLI local demo is enough | P3 |
+| BL-008 | Squid Game-branded public UI | IP risk; keep survival metaphor generic | P3 |
 
 ---
 
-## MVP Boundary
+## 2. Scope Rule
 
-Allowed in MVP:
-- local/mock plugin data
-- deterministic scoring
-- deletion recommendation only
-- reminder recommendation
-- weekly/monthly sample leaderboard
-- local demo
-
-Forbidden in MVP:
-- actual deletion
-- automatic uninstall
-- live API dependency
-- required auth
-- production multi-user analytics
+```txt
+If a feature is not needed for the under-2-minute CLI demo, keep it in BACKLOG.md.
+```

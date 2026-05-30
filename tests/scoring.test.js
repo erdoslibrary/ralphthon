@@ -1,36 +1,64 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { samplePlugins } from "../src/data/samplePlugins.js";
-import { calculateSurvivalScore, classifyPluginStatus, STATUSES } from "../src/domain/scoring.js";
+import { analyzePlugins, buildLeaderboard, scorePlugin } from "../src/scoring.js";
 
-test("same input produces deterministic survival score", () => {
-  const plugin = samplePlugins[0];
-  assert.deepEqual(calculateSurvivalScore(plugin), calculateSurvivalScore(plugin));
+const fixtureRecords = [
+  {
+    id: "safe",
+    name: "Safe Plugin",
+    weeklyUses: 20,
+    monthlyUses: 80,
+    estimatedCost: 5,
+    lastUsedDaysAgo: 1,
+    usefulnessSignal: 0.95
+  },
+  {
+    id: "delete",
+    name: "Delete Candidate",
+    weeklyUses: 0,
+    monthlyUses: 2,
+    estimatedCost: 28,
+    lastUsedDaysAgo: 60,
+    usefulnessSignal: 0.1
+  },
+  {
+    id: "remind",
+    name: "Reminder Candidate",
+    weeklyUses: 1,
+    monthlyUses: 12,
+    estimatedCost: 6,
+    lastUsedDaysAgo: 30,
+    usefulnessSignal: 0.8
+  }
+];
+
+test("scoring is deterministic for the same plugin", () => {
+  const first = scorePlugin(fixtureRecords[0]);
+  const second = scorePlugin(fixtureRecords[0]);
+
+  assert.deepEqual(first, second);
+  assert.equal(first.status, "SAFE");
 });
 
-test("high-use low-cost recent plugin becomes SAFE", () => {
-  const score = calculateSurvivalScore(samplePlugins.find((plugin) => plugin.id === "plugin-browser"));
-  assert.equal(score.status, STATUSES.SAFE);
-  assert.ok(score.score >= 70);
+test("recommendation engine marks low-value plugins for deletion recommendation only", () => {
+  const result = scorePlugin(fixtureRecords[1]);
+
+  assert.equal(result.status, "DELETE_RECOMMENDED");
+  assert.match(result.reason, /recommended only/i);
 });
 
-test("low-use high-cost old plugin becomes DELETION_RECOMMENDED", () => {
-  const score = calculateSurvivalScore(samplePlugins.find((plugin) => plugin.id === "plugin-old-expensive"));
-  assert.equal(score.status, STATUSES.DELETION_RECOMMENDED);
-  assert.ok(score.reasons.some((reason) => reason.includes("탈락 선언")));
-  assert.ok(score.reasons.some((reason) => reason.includes("실제 삭제는 수동으로만 가능합니다")));
+test("forgotten but useful plugins become reminder candidates", () => {
+  const result = scorePlugin(fixtureRecords[2]);
+
+  assert.equal(result.status, "REMIND");
 });
 
-test("useful but forgotten plugin becomes REMINDER_RECOMMENDED", () => {
-  const score = calculateSurvivalScore(samplePlugins.find((plugin) => plugin.id === "plugin-presentations"));
-  const reminderCopy = ["달고나", "생존 경고", "심사위원 주목"];
+test("leaderboard sorts by score and assigns ranks", () => {
+  const results = analyzePlugins(fixtureRecords);
+  const leaderboard = buildLeaderboard(results, "monthly");
 
-  assert.equal(score.status, STATUSES.REMINDER_RECOMMENDED);
-  assert.ok(score.reasons.some((reason) => reminderCopy.some((copy) => reason.includes(copy))));
-});
-
-test("classifier thresholds match contract", () => {
-  assert.equal(classifyPluginStatus(70), STATUSES.SAFE);
-  assert.equal(classifyPluginStatus(40), STATUSES.REMINDER_RECOMMENDED);
-  assert.equal(classifyPluginStatus(39), STATUSES.DELETION_RECOMMENDED);
+  assert.equal(leaderboard[0].rank, 1);
+  assert.equal(leaderboard[0].name, "Safe Plugin");
+  assert.equal(leaderboard[0].period, "monthly");
+  assert.equal(leaderboard[0].usageCount, 80);
 });

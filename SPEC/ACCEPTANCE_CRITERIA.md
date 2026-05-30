@@ -1,191 +1,146 @@
-# SPEC/ACCEPTANCE_CRITERIA.md — Coqid-game
+# SPEC/ACCEPTANCE_CRITERIA.md — Coqid-game CLI
 
 ## 0. Purpose
 
-This file defines testable completion criteria for Coqid-game.
+Acceptance criteria define what must pass before Coqid-game can be considered complete.
 
-A feature is complete only when the related acceptance criteria pass validation.
+A feature is not complete because the agent says it is complete. It is complete only when these criteria are validated.
 
 ---
 
-## AC-001: Dashboard loads with plugin data
+## 1. Core Acceptance Criteria
 
+### AC-001: CLI entry point works
+
+```txt
 Priority: P0
-Related requirement: FR-001
+Related PRD Requirement: FR-001, NFR-001
+Given Coqid-game is installed or runnable locally
+When the user runs `coqid-game --help`
+Then the CLI prints available commands and exits successfully.
+Validation: CLI smoke test
+Status: PASS
+```
 
-Given sample plugin usage data exists  
-When the user opens Coqid-game  
-Then the dashboard shows a list of plugins with name, usage count, estimated cost, last used date, survival score placeholder or status area.
+### AC-002: Analyze command reads local plugin data
 
-Validation:
-Smoke / integration test
-
----
-
-## AC-002: Survival score is calculated deterministically
-
+```txt
 Priority: P0
-Related requirement: FR-002
+Related PRD Requirement: FR-002
+Given a valid local JSON fixture exists
+When the user runs `coqid-game analyze --data ./fixtures/plugins.json`
+Then Coqid-game reads and validates the plugin usage records.
+Validation: CLI integration test
+Status: PASS
+```
 
-Given the same plugin usage data  
-When the scoring engine runs multiple times  
-Then each plugin receives the same survival score every time.
+### AC-003: Survival scores are deterministic
 
-Validation:
-Unit test
-
----
-
-## AC-003: Low-value plugins are deletion recommended
-
+```txt
 Priority: P0
-Related requirement: FR-003
+Related PRD Requirement: FR-003, NFR-003
+Given the same valid plugin usage data
+When `analyze` is run multiple times
+Then each plugin receives the same survival score and status each time.
+Validation: Unit test for scoring engine / CLI snapshot test
+Status: PASS
+```
 
-Given a plugin has low usage, high estimated cost, and old last-used date  
-When survival scoring runs  
-Then the plugin is marked as `DELETION_RECOMMENDED`.
+### AC-004: Low-value plugins are recommended for deletion
 
-Validation:
-Unit / integration test
-
----
-
-## AC-004: Useful but forgotten plugins are reminder recommended
-
+```txt
 Priority: P0
-Related requirement: FR-004
+Related PRD Requirement: FR-004
+Given a plugin has low usage, stale last-used date, and poor estimated efficiency
+When the analyze command runs
+Then the plugin is marked `DELETE_RECOMMENDED` with a human-readable reason.
+Validation: Unit test + CLI integration test
+Status: PASS
+```
 
-Given a plugin has useful historical usage but has not been used recently  
-When survival scoring runs  
-Then the plugin is marked as `REMINDER_RECOMMENDED`.
+### AC-005: Forgotten but useful plugins are reminder candidates
 
-Validation:
-Unit / integration test
-
----
-
-## AC-005: High-value plugins are safe
-
+```txt
 Priority: P0
-Related requirement: FR-002
+Related PRD Requirement: FR-005
+Given a plugin has historically useful signals but low recent usage
+When the analyze command runs
+Then the plugin is marked `REMIND` instead of `DELETE_RECOMMENDED`.
+Validation: Unit test + CLI integration test
+Status: PASS
+```
 
-Given a plugin has high usage, low estimated cost, and recent activity  
-When survival scoring runs  
-Then the plugin is marked as `SAFE`.
+### AC-006: Weekly and monthly leaderboard commands work
 
-Validation:
-Unit test
-
----
-
-## AC-006: Weekly leaderboard is sorted correctly
-
+```txt
 Priority: P0
-Related requirement: FR-005
+Related PRD Requirement: FR-006
+Given valid plugin usage data exists
+When the user runs `coqid-game leaderboard --period weekly` or `--period monthly`
+Then Coqid-game prints a sorted leaderboard with rank, plugin name, score, and status.
+Validation: CLI integration test
+Status: PASS
+```
 
-Given multiple plugins have weekly score values  
-When the weekly leaderboard is shown  
-Then plugins are displayed in descending rank order.
+### AC-007: Invalid or missing data is handled safely
 
-Validation:
-Unit / integration test
-
----
-
-## AC-007: Monthly leaderboard is sorted correctly
-
+```txt
 Priority: P0
-Related requirement: FR-005
+Related PRD Requirement: FR-007, NFR-005
+Given the input file is missing, empty, malformed, or invalid
+When the user runs analyze or leaderboard
+Then Coqid-game prints a controlled error message, exits non-zero, and does not crash.
+Validation: CLI error-path tests
+Status: PASS
+```
 
-Given multiple plugins have monthly score values  
-When the monthly leaderboard is shown  
-Then plugins are displayed in descending rank order.
+### AC-008: Coqid-game never deletes plugins in MVP
 
-Validation:
-Unit / integration test
-
----
-
-## AC-008: Empty plugin data shows safe empty state
-
+```txt
 Priority: P0
-Related requirement: FR-006
+Related PRD Requirement: FR-008
+Given a plugin is marked `DELETE_RECOMMENDED`
+When the analyze command completes
+Then no plugin file, config, or installation is deleted or modified.
+Validation: Static inspection + integration test using fixture directory
+Status: PASS
+```
 
-Given no plugin data exists  
-When the user opens Coqid-game  
-Then the app shows a clear empty state and does not crash.
+### AC-009: Demo completes in under 2 minutes
 
-Validation:
-Integration / smoke test
-
----
-
-## AC-009: Malformed plugin data is handled safely
-
+```txt
 Priority: P0
-Related requirement: FR-007
-
-Given plugin data is missing required fields or contains invalid values  
-When the app attempts to parse it  
-Then the app shows a controlled fallback/error state and does not crash.
-
-Validation:
-Unit / integration test
-
----
-
-## AC-010: Coqid-game never deletes plugins automatically
-
-Priority: P0
-Related requirement: FR-008
-
-Given a plugin is marked as Deletion Recommended  
-When the user views the recommendation  
-Then the app only recommends review/deletion and does not delete, uninstall, disable, or modify the plugin.
-
-Validation:
-Static inspection / integration test
+Related PRD Requirement: NFR-002
+Given the project is installed and fixture data exists
+When the presenter follows docs/DEMO_SCRIPT.md
+Then the CLI demo shows help, analysis, deletion recommendations, leaderboard, and error handling in under 2 minutes.
+Validation: Manual demo rehearsal
+Status: PASS
+```
 
 ---
 
-## AC-011: Demo completes under 2 minutes
+## 2. Negative Acceptance Criteria
 
-Priority: P0
-Related requirement: NFR-002
-
-Given the app is running locally  
-When the presenter follows docs/DEMO_SCRIPT.md  
-Then the core value is demonstrated in under 2 minutes.
-
-Validation:
-Manual rehearsal
+```txt
+NAC-001: Coqid-game must not execute any actual plugin deletion in MVP.
+NAC-002: Coqid-game must not require a web server for the MVP demo.
+NAC-003: Coqid-game must not require live Codex usage API access for MVP.
+NAC-004: Coqid-game must not silently ignore invalid input.
+```
 
 ---
 
-## AC-012: App runs without live Codex API
+## 3. Completion Gate
 
-Priority: P0
-Related requirement: NFR-005
-
-Given no live Codex usage API is available  
-When the app starts  
-Then the product still works using mock/local sample data.
-
-Validation:
-Smoke test
-
----
-
-## Negative Acceptance Criteria
-
-### NAC-001: No destructive deletion
-
-The app must not perform real plugin deletion in MVP.
-
-### NAC-002: No unsupported exact cost claim
-
-The app must label plugin cost as estimated unless a real validated cost source exists.
-
-### NAC-003: No live API dependency for demo
-
-The final demo must not require live Codex telemetry.
+```txt
+[x] AC-001 PASS
+[x] AC-002 PASS
+[x] AC-003 PASS
+[x] AC-004 PASS
+[x] AC-005 PASS
+[x] AC-006 PASS
+[x] AC-007 PASS
+[x] AC-008 PASS
+[x] AC-009 PASS
+```

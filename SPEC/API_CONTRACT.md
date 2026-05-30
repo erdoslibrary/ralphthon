@@ -1,149 +1,227 @@
-# SPEC/API_CONTRACT.md — Coqid-game
+# SPEC/API_CONTRACT.md — Coqid-game CLI Contract
 
-## 0. API Decision
+## 0. Purpose
 
-API required for MVP:
+Define the CLI, local data, and output contracts for Coqid-game.
+
+No HTTP API is required for the MVP.
+
+---
+
+## 1. API Decision
 
 ```txt
-NO
+HTTP API required: NO
+Backend required: NO
+External Codex API required for MVP: NO
+CLI interface required: YES
 ```
 
 Reason:
-Coqid-game can demonstrate the full MVP using mock/local plugin usage data. Real Codex plugin usage APIs, token/coin metrics, and cross-user leaderboard sync are out of MVP scope.
-
----
-
-## 1. No-API Declaration
-
-Data flow:
 
 ```txt
-Sample plugin data
-  -> validation
-  -> scoring engine
-  -> status classifier
-  -> leaderboard builder
-  -> dashboard UI
+The MVP is a local CLI plugin assistant that reads local/mock plugin usage data and prints recommendations.
 ```
-
-No backend endpoint is required for the MVP.
 
 ---
 
-## 2. Internal Function Contracts
+## 2. CLI Commands
 
-### FUNC-001: calculateSurvivalScore
+### CLI-001: Help
 
-Signature:
-
-```ts
-calculateSurvivalScore(plugin: PluginUsage): SurvivalScore
+```bash
+coqid-game --help
 ```
 
-Input:
-
-```ts
-type PluginUsage = {
-  id: string;
-  name: string;
-  weeklyUses: number;
-  monthlyUses: number;
-  estimatedCost: "low" | "medium" | "high";
-  lastUsedDaysAgo: number;
-  userRating?: number;
-  description?: string;
-  url?: string;
-};
-```
-
-Output:
-
-```ts
-type SurvivalScore = {
-  pluginId: string;
-  score: number;
-  status: "SAFE" | "REMINDER_RECOMMENDED" | "DELETION_RECOMMENDED";
-  reasons: string[];
-};
-```
-
-Validation:
-- score must be between 0 and 100
-- same input must return same output
-- invalid values must be rejected or normalized safely
-- optional URL values must be limited to http/https
-
----
-
-### FUNC-002: classifyPluginStatus
-
-Signature:
-
-```ts
-classifyPluginStatus(score: number): PluginStatus
-```
-
-Rules:
+Expected:
 
 ```txt
-score >= 70 -> SAFE
-40 <= score < 70 -> REMINDER_RECOMMENDED
-score < 40 -> DELETION_RECOMMENDED
+Prints usage, available commands, options, and exits 0.
 ```
 
 ---
 
-### FUNC-003: buildLeaderboard
+### CLI-002: Analyze plugins
 
-Signature:
-
-```ts
-buildLeaderboard(scores: SurvivalScore[], period: "weekly" | "monthly"): LeaderboardEntry[]
+```bash
+coqid-game analyze --data ./fixtures/plugins.json
 ```
 
-Output must be sorted by descending rank score.
+Options:
 
----
+| Option | Required? | Description |
+|---|---:|---|
+| `--data <path>` | YES | Path to local plugin usage JSON |
+| `--format table|json` | NO | Output format; default table |
+| `--threshold <number>` | NO | Delete recommendation threshold |
 
-## 3. Mock Data Contract
-
-Mock data location:
+Success output must include:
 
 ```txt
-src/data/samplePlugins.js
+- plugin name
+- weekly uses
+- monthly uses
+- estimated cost
+- last used
+- survival score
+- status
+- reason
 ```
 
-Required shape:
+Exit code:
+
+```txt
+0 on success
+1 on validation or input error
+2 on unexpected internal error
+```
+
+---
+
+### CLI-003: Leaderboard
+
+```bash
+coqid-game leaderboard --period weekly --data ./fixtures/plugins.json
+coqid-game leaderboard --period monthly --data ./fixtures/plugins.json
+```
+
+Options:
+
+| Option | Required? | Description |
+|---|---:|---|
+| `--period weekly|monthly` | YES | Ranking period |
+| `--data <path>` | YES | Path to local plugin usage JSON |
+| `--sort score|usage|efficiency` | NO | Sort mode; default score |
+
+Success output must include:
+
+```txt
+- rank
+- plugin name
+- period
+- usage count
+- survival score
+- status
+```
+
+---
+
+## 3. Forbidden CLI Contract
+
+The MVP must not expose destructive deletion commands.
+
+Forbidden:
+
+```bash
+coqid-game delete
+coqid-game purge
+coqid-game remove
+```
+
+Any actual deletion behavior must be rejected by Validator.
+
+---
+
+## 4. Local Data Contract
+
+Input file shape:
 
 ```json
 {
-  "id": "plugin-001",
-  "name": "Example Plugin",
-  "weeklyUses": 12,
-  "monthlyUses": 48,
-  "estimatedCost": "medium",
-  "lastUsedDaysAgo": 3,
-  "userRating": 4,
-  "description": "Explains what the plugin does in the local demo.",
-  "url": "https://example.com/coqid-game/plugins/example-plugin"
+  "generatedAt": "2026-05-30T00:00:00.000Z",
+  "plugins": [
+    {
+      "id": "plugin-linter",
+      "name": "Linter Helper",
+      "category": "quality",
+      "weeklyUses": 18,
+      "monthlyUses": 64,
+      "estimatedCost": 12,
+      "lastUsedDaysAgo": 1,
+      "usefulnessSignal": 0.9
+    }
+  ]
 }
+```
+
+Required plugin fields:
+
+```txt
+id: non-empty string
+name: non-empty string
+weeklyUses: number >= 0
+monthlyUses: number >= 0
+estimatedCost: number >= 0
+lastUsedDaysAgo: number >= 0
+usefulnessSignal: number between 0 and 1
 ```
 
 ---
 
-## 4. Future API Contracts
+## 5. Output Contract
 
-Future, not MVP:
+### Table output
 
-| Contract | Purpose | Status |
-|---|---|---|
-| GET /api/plugins | load real installed plugins | BACKLOG |
-| GET /api/usage | load plugin usage telemetry | BACKLOG |
-| POST /api/leaderboard | submit anonymous ranking data | BACKLOG |
-| DELETE /api/plugins/:id | delete plugin | REJECTED_FOR_MVP |
+Human-readable terminal output should include sections:
+
+```txt
+Coqid-game Survival Report
+Deletion Recommendations
+Reminder Candidates
+Leaderboard Summary
+```
+
+### JSON output
+
+```json
+{
+  "ok": true,
+  "data": {
+    "plugins": [
+      {
+        "id": "plugin-linter",
+        "name": "Linter Helper",
+        "survivalScore": 88,
+        "status": "SAFE",
+        "reason": "High usage and strong efficiency"
+      }
+    ]
+  }
+}
+```
+
+### Error output
+
+```json
+{
+  "ok": false,
+  "error": {
+    "code": "INVALID_INPUT",
+    "message": "Data file is missing or invalid."
+  }
+}
+```
+
+Error codes:
+
+```txt
+INVALID_INPUT
+FILE_NOT_FOUND
+INVALID_JSON
+SCHEMA_INVALID
+INTERNAL_ERROR
+```
 
 ---
 
-## 5. Critical Constraint
+## 6. Contract Tests Required
 
-There must be no MVP API contract that deletes, uninstalls, disables, or modifies real plugins.
+```txt
+[x] `--help` exits 0 and shows commands
+[x] analyze valid fixture exits 0
+[x] analyze invalid fixture exits non-zero with controlled error
+[x] leaderboard weekly sorts correctly
+[x] leaderboard monthly sorts correctly
+[x] no destructive delete command exists
+[x] JSON output matches schema if `--format json` is used
+```

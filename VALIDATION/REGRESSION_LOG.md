@@ -9,9 +9,9 @@ A failure is not fully resolved until a regression test exists and passes, an ex
 ## 1. Status
 
 ```txt
-Document status: DRAFT
-Total regression items: 2
-Validator decision: PASS_LOCAL_MVP
+Document status: FINAL
+Total regression items: 4
+Validator decision: PASS
 ```
 
 ## 2. Regression Rules
@@ -35,8 +35,10 @@ ACCEPTED_RISK
 
 | Regression ID | Original Failure | Severity | Related AC | Test/Method | Command | Status | Evidence |
 |---|---|---|---|---|---|---|---|
-| REG-001 | No failure; destructive-action risk protection | Critical risk | AC-010 | tests/noDeletion.test.js + scripts/smoke.mjs + browser rehearsal | npm test / npm run smoke | PASS | VALIDATION_REPORT.md V-005 |
-| REG-002 | F-001 | Low | AC-004 | tests/scoring.test.js | npm test | PASS | VALIDATION_REPORT.md V-008 |
+| REG-001 | Prevent destructive behavior | Critical | AC-008 | Static inspection + CLI delete rejection | `npm test` | PASS | VALIDATION_REPORT.md V-001 |
+| REG-002 | Preserve invalid data handling | High | AC-007 | CLI invalid/malformed/missing/empty tests | `npm test` | PASS | VALIDATION_REPORT.md V-001 |
+| REG-003 | Preserve deterministic scoring | High | AC-003 | Unit deterministic scoring test | `npm test` | PASS | VALIDATION_REPORT.md V-001 |
+| REG-004 | Preserve demo path | High | AC-009 | Smoke rehearsal | `npm run smoke` | PASS | VALIDATION_REPORT.md V-003/V-004 |
 
 ## 5. Regression Item Template
 
@@ -79,7 +81,7 @@ VALIDATION/VALIDATION_REPORT.md V-XXX
 ## 6. Final Regression Review
 
 ```txt
-[x] All Critical fixed failures have regression protection or no Critical fixed failures exist
+[x] All Critical fixed failures have regression protection
 [x] All High fixed failures have regression protection or accepted risk
 [x] No Critical/High regression item is FAIL
 [x] Regression evidence is recorded

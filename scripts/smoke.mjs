@@ -1,34 +1,23 @@
-import { readFile } from "node:fs/promises";
+import { spawnSync } from "node:child_process";
 
-const index = await readFile("index.html", "utf8");
-const app = await readFile("src/app.js", "utf8");
-const scoring = await readFile("src/domain/scoring.js", "utf8");
-const leaderboard = await readFile("src/domain/leaderboard.js", "utf8");
-
-const requiredText = [
-  "Coqid-game",
-  "Run Survival Check",
-  "Deletion Recommended",
-  "It does not delete",
-  "Mark as Reviewed",
-  "Keep for Now",
-  "Add to Cleanup List",
-  "My Case",
-  "Personal Use Case",
-  "Worldwide Case",
-  "Global Arena",
-  "Plugin intel",
-  "Plugin URL",
-  "달고나",
-  "탈락 선언",
-  "SURVIVOR",
-  "ELIMINATED"
+const commands = [
+  ["cli/coqid-game.js", ["--help"], 0],
+  ["cli/coqid-game.js", ["analyze", "--data", "fixtures/plugins.json"], 0],
+  ["cli/coqid-game.js", ["leaderboard", "--period", "weekly", "--data", "fixtures/plugins.json"], 0],
+  ["cli/coqid-game.js", ["analyze", "--data", "fixtures/invalid.json"], 1],
+  ["cli/coqid-game.js", ["analyze", "--data", "fixtures/malformed.json"], 1]
 ];
 
-for (const text of requiredText) {
-  if (!index.includes(text) && !app.includes(text) && !scoring.includes(text) && !leaderboard.includes(text)) {
-    throw new Error(`Smoke text missing: ${text}`);
+for (const [script, args, expectedStatus] of commands) {
+  const result = spawnSync(process.execPath, [script, ...args], {
+    encoding: "utf8"
+  });
+
+  if (result.status !== expectedStatus) {
+    console.error(result.stdout);
+    console.error(result.stderr);
+    throw new Error(`Smoke command failed: ${script} ${args.join(" ")}`);
   }
 }
 
-console.log("Smoke inspection passed: dashboard entry text, safety copy, and review-only actions found.");
+console.log("Smoke check passed: help, analyze, leaderboard, and invalid-input paths behaved as expected.");

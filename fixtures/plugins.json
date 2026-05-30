@@ -1,0 +1,45 @@
+{
+  "generatedAt": "2026-05-30T00:00:00.000Z",
+  "plugins": [
+    {
+      "id": "openai-docs",
+      "name": "OpenAI Docs Navigator",
+      "category": "research",
+      "weeklyUses": 19,
+      "monthlyUses": 72,
+      "estimatedCost": 8,
+      "lastUsedDaysAgo": 1,
+      "usefulnessSignal": 0.95
+    },
+    {
+      "id": "slide-polisher",
+      "name": "Slide Polisher",
+      "category": "presentation",
+      "weeklyUses": 4,
+      "monthlyUses": 14,
+      "estimatedCost": 18,
+      "lastUsedDaysAgo": 9,
+      "usefulnessSignal": 0.54
+    },
+    {
+      "id": "legacy-plugin-wrangler",
+      "name": "Legacy Plugin Wrangler",
+      "category": "maintenance",
+      "weeklyUses": 0,
+      "monthlyUses": 2,
+      "estimatedCost": 27,
+      "lastUsedDaysAgo": 49,
+      "usefulnessSignal": 0.18
+    },
+    {
+      "id": "diagram-scout",
+      "name": "Diagram Scout",
+      "category": "design",
+      "weeklyUses": 1,
+      "monthlyUses": 11,
+      "estimatedCost": 7,
+      "lastUsedDaysAgo": 35,
+      "usefulnessSignal": 0.82
+    }
+  ]
+}
