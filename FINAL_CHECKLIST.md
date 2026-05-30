@@ -44,6 +44,8 @@
 [x] review-only deletion actions shown in browser rehearsal
 [x] survival-game-inspired theme shown in browser rehearsal
 [x] My Case and Global Arena visually separated
+[x] plugin info panels shown in browser rehearsal
+[x] Global Arena plugin URLs shown in browser rehearsal
 [x] leaderboard shown in browser rehearsal
 [x] fallback/empty state shown in browser rehearsal
 [x] malformed-data fallback shown in browser rehearsal

@@ -31,6 +31,7 @@ Builder claim is not evidence. Command output, file inspection, passing test res
 | V-004 | Re-apply check validation | npm test / npm run build / npm run smoke | 0 / 0 / 0 | PASS | 12 tests passed, build complete, smoke inspection passed |
 | V-005 | Final local MVP validation after review-only actions | npm test / npm run build / npm run smoke / browser rehearsal | 0 / 0 / 0 / PASS | PASS | 13 tests passed, build complete, smoke inspection passed, browser demo flow and fallbacks passed |
 | V-006 | Visual theme and personal/global separation validation | npm test / npm run build / npm run smoke / browser rehearsal | 0 / 0 / 0 / PASS | PASS | 13 tests passed, build complete, smoke text found, themed browser flow passed |
+| V-007 | Plugin info panels and Global Arena URL validation | npm test / npm run build / npm run smoke / browser rehearsal | 0 / 0 / 0 / PASS | PASS | 16 tests passed, build complete, smoke text found, info panel and URL browser flow passed |
 
 ## 4. Acceptance Criteria Validation Table
 
@@ -57,6 +58,8 @@ Additional UI validation:
 | Personal use case separation | PASS | npm run smoke / browser rehearsal V-006 | My Case and Personal Use Case labels visible |
 | Worldwide case separation | PASS | npm run smoke / browser rehearsal V-006 | Worldwide Case and Global Arena labels visible |
 | Narrow viewport visibility | PASS | browser rehearsal V-006 | Global Arena appears before plugin cards in narrow browser layout |
+| Plugin info panels | PASS | npm test / npm run smoke / browser rehearsal V-007 | Info button opens Plugin intel panel |
+| Global Arena URLs | PASS | npm test / npm run smoke / browser rehearsal V-007 | Each leaderboard row renders Plugin URL |
 
 ## 4.1 Validation Run V-001: Initial Automated Validation
 
@@ -205,6 +208,82 @@ npm run dev
 ### Risks
 - `back` branch integration remains unvalidated and must not be merged into local MVP without contract, data, test mapping, risk, and validation updates.
 - Real Codex API, exact cost, and production leaderboard remain accepted out-of-MVP risks.
+
+### Validator Decision
+PASS_LOCAL_MVP_WITH_ACCEPTED_BACK_SCOPE_RISK
+
+## 4.5 Validation Run V-007: Plugin Info Panels And Global Arena URLs
+
+### Timestamp
+2026-05-30
+
+### Trigger
+User requested an `i` info part for each plugin and URLs attached to each plugin in Global Arena.
+
+### Scope
+Plugin description metadata, safe plugin URL validation, info panel UI, Global Arena URL rendering, automated tests, build, smoke inspection, and browser rehearsal.
+
+### Related Task
+T-016.
+
+### Related Acceptance Criteria
+AC-001, AC-006, AC-007, AC-009, AC-011, AC-012.
+
+### Commands Run
+```bash
+npm test
+npm run build
+npm run smoke
+```
+
+### Command Results
+- Command: npm test
+- Exit status: 0
+- Result: PASS
+- Notes: 16 tests passed, 0 failed, 0 skipped.
+
+- Command: npm run build
+- Exit status: 0
+- Result: PASS
+- Notes: Build complete: dist/.
+
+- Command: npm run smoke
+- Exit status: 0
+- Result: PASS
+- Notes: Smoke inspection found Plugin intel and Plugin URL text in addition to existing dashboard checks.
+
+### Browser Rehearsal
+- URL: http://127.0.0.1:4173
+- Run Survival Check: PASS
+- Browser Control info button visible: PASS
+- Plugin intel panel opens: PASS
+- Plugin description visible: PASS
+- Open plugin reference link visible: PASS
+- Global Arena Plugin URL links visible: PASS
+- Browser console errors: 0
+- Screenshot evidence: /private/tmp/coqid-game-info-links.png
+
+### Tests Summary
+- Total: 16
+- Passed: 16
+- Failed: 0
+- Skipped: 0
+
+### Build Summary
+- Build command: npm run build
+- Result: PASS
+
+### Runtime / Smoke Summary
+- Existing local dev server: http://127.0.0.1:4173
+- Smoke command: npm run smoke
+- Result: PASS
+
+### Failed Items
+- None.
+
+### Risks
+- Plugin URLs are sample links for the local MVP, not live Codex registry records.
+- `back` branch integration remains outside this validation scope.
 
 ### Validator Decision
 PASS_LOCAL_MVP_WITH_ACCEPTED_BACK_SCOPE_RISK

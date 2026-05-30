@@ -18,6 +18,12 @@ export function validatePlugin(plugin) {
   ) {
     errors.push("userRating must be 1-5 when present");
   }
+  if (plugin?.description !== undefined && (typeof plugin.description !== "string" || plugin.description.trim() === "")) {
+    errors.push("description must be a non-empty string when present");
+  }
+  if (plugin?.url !== undefined && !isSafeHttpUrl(plugin.url)) {
+    errors.push("url must be an http or https URL when present");
+  }
 
   return {
     valid: errors.length === 0,
@@ -46,4 +52,15 @@ export function parsePluginData(rows) {
   });
 
   return { plugins, errors };
+}
+
+function isSafeHttpUrl(value) {
+  if (typeof value !== "string") return false;
+
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
 }

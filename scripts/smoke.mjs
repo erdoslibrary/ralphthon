@@ -14,7 +14,9 @@ const requiredText = [
   "My Case",
   "Personal Use Case",
   "Worldwide Case",
-  "Global Arena"
+  "Global Arena",
+  "Plugin intel",
+  "Plugin URL"
 ];
 
 for (const text of requiredText) {

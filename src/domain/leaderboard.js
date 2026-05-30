@@ -9,6 +9,7 @@ export function buildLeaderboard(plugins, scores, period) {
       return {
         pluginId: plugin.id,
         pluginName: plugin.name,
+        pluginUrl: plugin.url ?? "",
         rank: 0,
         period,
         score: periodScore,

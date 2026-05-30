@@ -51,6 +51,8 @@ type PluginUsage = {
   estimatedCost: "low" | "medium" | "high";
   lastUsedDaysAgo: number;
   userRating?: number;
+  description?: string;
+  url?: string;
 };
 ```
 
@@ -69,6 +71,7 @@ Validation:
 - score must be between 0 and 100
 - same input must return same output
 - invalid values must be rejected or normalized safely
+- optional URL values must be limited to http/https
 
 ---
 
@@ -120,7 +123,9 @@ Required shape:
   "monthlyUses": 48,
   "estimatedCost": "medium",
   "lastUsedDaysAgo": 3,
-  "userRating": 4
+  "userRating": 4,
+  "description": "Explains what the plugin does in the local demo.",
+  "url": "https://example.com/coqid-game/plugins/example-plugin"
 }
 ```
 

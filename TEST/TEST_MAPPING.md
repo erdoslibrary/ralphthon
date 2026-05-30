@@ -22,6 +22,8 @@ Map Coqid-game acceptance criteria to concrete tests or validation steps.
 | AC-010 | no actual deletion | TEST-010 / TEST-013 | static/integration/browser | PASS |
 | AC-011 | demo under 2 minutes | TEST-011 | browser rehearsal | PASS_LOCAL |
 | AC-012 | app runs without live Codex API | TEST-012 | smoke | PASS_INITIAL |
+| UI-001 | plugin info panels visible | TEST-014 | unit/smoke/browser | PASS |
+| UI-002 | global arena plugin URLs visible | TEST-015 | unit/smoke/browser | PASS |
 
 ---
 

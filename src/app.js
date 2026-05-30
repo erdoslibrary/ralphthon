@@ -9,6 +9,7 @@ const state = {
   errors: [],
   scores: [],
   reviewActions: {},
+  infoOpen: {},
   hasRun: false,
   filter: "ALL",
   period: "weekly"
@@ -42,6 +43,7 @@ elements.statusFilter.addEventListener("change", (event) => {
 elements.weeklyTab.addEventListener("click", () => setPeriod("weekly"));
 elements.monthlyTab.addEventListener("click", () => setPeriod("monthly"));
 elements.pluginList.addEventListener("click", handleReviewAction);
+elements.pluginList.addEventListener("click", handleInfoToggle);
 
 loadData(samplePlugins, true);
 
@@ -52,6 +54,7 @@ function loadData(rows, preserveMessage) {
   state.errors = result.errors;
   state.scores = [];
   state.reviewActions = {};
+  state.infoOpen = {};
   state.hasRun = false;
   state.filter = "ALL";
   elements.statusFilter.value = "ALL";
@@ -90,6 +93,15 @@ function handleReviewAction(event) {
 
   const { pluginId, reviewAction } = button.dataset;
   state.reviewActions[pluginId] = getReviewActionLabel(reviewAction);
+  renderPlugins();
+}
+
+function handleInfoToggle(event) {
+  const button = event.target.closest("[data-info-toggle]");
+  if (!button) return;
+
+  const { pluginId } = button.dataset;
+  state.infoOpen[pluginId] = !state.infoOpen[pluginId];
   renderPlugins();
 }
 
@@ -150,13 +162,27 @@ function renderPlugins() {
       const status = score?.status ?? "PENDING";
       const reasons = score?.reasons ?? ["Run Survival Check to calculate a deterministic score."];
       const reviewNote = state.reviewActions[plugin.id];
+      const infoId = `info-${plugin.id}`;
+      const isInfoOpen = Boolean(state.infoOpen[plugin.id]);
 
       return `
         <article class="plugin-card ${status.toLowerCase()}">
           <div class="plugin-card-header">
-            <h3>${escapeHtml(plugin.name)}</h3>
+            <div class="plugin-title-row">
+              <h3>${escapeHtml(plugin.name)}</h3>
+              <button
+                type="button"
+                class="info-button"
+                aria-label="${escapeHtml(plugin.name)} info"
+                aria-expanded="${isInfoOpen}"
+                aria-controls="${escapeHtml(infoId)}"
+                data-plugin-id="${escapeHtml(plugin.id)}"
+                data-info-toggle
+              >i</button>
+            </div>
             <span class="status-pill">${formatStatus(status)}</span>
           </div>
+          ${renderInfoPanel(plugin, infoId, isInfoOpen)}
           <dl class="plugin-stats">
             <div><dt>Weekly</dt><dd>${plugin.weeklyUses}</dd></div>
             <div><dt>Monthly</dt><dd>${plugin.monthlyUses}</dd></div>
@@ -192,6 +218,7 @@ function renderLeaderboard() {
           <span>${escapeHtml(entry.pluginName)}</span>
           <strong>${entry.score}</strong>
           <small>${formatBadge(entry.badge)}</small>
+          ${entry.pluginUrl ? `<a href="${escapeHtml(entry.pluginUrl)}" target="_blank" rel="noreferrer">Plugin URL</a>` : ""}
         </li>
       `
     )
@@ -225,6 +252,18 @@ function renderReviewOnlyActions(pluginId, reviewNote) {
       </div>
       ${reviewNote ? `<p class="review-note" aria-live="polite">${escapeHtml(reviewNote)}</p>` : ""}
     </div>
+  `;
+}
+
+function renderInfoPanel(plugin, infoId, isOpen) {
+  const description = plugin.description ?? "No plugin description is available for this sample row.";
+
+  return `
+    <section id="${escapeHtml(infoId)}" class="info-panel${isOpen ? " open" : ""}" ${isOpen ? "" : "hidden"}>
+      <strong>Plugin intel</strong>
+      <p>${escapeHtml(description)}</p>
+      ${plugin.url ? `<a href="${escapeHtml(plugin.url)}" target="_blank" rel="noreferrer">Open plugin reference</a>` : ""}
+    </section>
   `;
 }
 

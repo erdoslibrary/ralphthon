@@ -23,6 +23,7 @@ Dashboard loads with sample plugin contestants.
 
 Show:
 - plugin name
+- info button and plugin description
 - weekly uses
 - monthly uses
 - estimated cost
@@ -70,7 +71,7 @@ The app records a local manual-review note and does not change, delete, disable,
 
 ### Step 5: Show leaderboard
 
-Show weekly and monthly leaderboard.
+Show weekly and monthly leaderboard with plugin reference URLs.
 
 Say:
 

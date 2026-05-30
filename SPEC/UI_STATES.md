@@ -55,6 +55,8 @@ Actions:
 
 Each plugin card shows:
 - plugin name
+- info button
+- plugin description panel when info button is opened
 - weekly uses
 - monthly uses
 - estimated cost
@@ -149,6 +151,7 @@ Leaderboard rows:
 - plugin name
 - score
 - badge
+- plugin reference URL
 
 Badges:
 - Most Used

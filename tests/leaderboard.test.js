@@ -21,3 +21,8 @@ test("monthly leaderboard is sorted by descending score", () => {
     leaderboard.map((entry) => entry.score).toSorted((a, b) => b - a)
   );
 });
+
+test("leaderboard entries include plugin URLs", () => {
+  const leaderboard = buildLeaderboard(samplePlugins, scorePlugins(samplePlugins), "weekly");
+  assert.match(leaderboard[0].pluginUrl, /^https?:\/\//);
+});

@@ -53,6 +53,8 @@ type PluginUsage = {
   estimatedCost: "low" | "medium" | "high";
   lastUsedDaysAgo: number;
   userRating?: number;
+  description?: string;
+  url?: string;
 };
 ```
 
@@ -64,6 +66,8 @@ Validation:
 - estimatedCost is low/medium/high
 - lastUsedDaysAgo >= 0
 - userRating, if present, must be 1-5
+- description, if present, must be a non-empty string
+- url, if present, must be an http or https URL
 
 ---
 
@@ -99,6 +103,7 @@ DELETION_RECOMMENDED: score < 40
 type LeaderboardEntry = {
   pluginId: string;
   pluginName: string;
+  pluginUrl?: string;
   rank: number;
   period: "weekly" | "monthly";
   score: number;
@@ -110,6 +115,7 @@ Rules:
 - rank starts at 1
 - rows are sorted by score descending unless showing most endangered
 - period must be weekly or monthly
+- pluginUrl is optional and points to a sample plugin reference URL in MVP
 
 ---
 
@@ -152,6 +158,8 @@ Must include examples of:
 - DELETION_RECOMMENDED plugin
 - high-cost low-use plugin
 - leaderboard winner
+- plugin descriptions
+- sample plugin reference URLs
 
 ---
 

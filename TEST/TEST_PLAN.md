@@ -16,6 +16,8 @@ Coqid-game testing focuses on deterministic scoring, safe recommendation behavio
 | review-only recommendation actions | static/browser | P0 |
 | reminder recommendation | unit/integration | P0 |
 | leaderboard sorting | unit/integration | P0 |
+| plugin info metadata and panels | unit/smoke/browser | P0 |
+| Global Arena plugin URLs | unit/smoke/browser | P0 |
 | empty data state | integration/smoke | P0 |
 | malformed data fallback | unit/integration | P0 |
 | local demo startup | smoke | P0 |
@@ -34,7 +36,9 @@ Coqid-game testing focuses on deterministic scoring, safe recommendation behavio
 8. Malformed plugin data does not crash.
 9. Deletion recommended status does not trigger actual deletion/uninstall.
 10. Deletion recommended UI exposes review-only actions without changing plugins.
-11. App runs without live Codex API.
+11. Plugin info metadata uses safe description and URL shapes.
+12. Global Arena leaderboard entries include plugin URLs.
+13. App runs without live Codex API.
 
 ---
 

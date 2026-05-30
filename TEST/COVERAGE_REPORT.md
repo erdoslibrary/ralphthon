@@ -22,6 +22,8 @@ Coverage priority is behavior coverage, not vanity line coverage.
 | actual deletion path | MUST NOT EXIST | PASS_STATIC_INSPECTION |
 | review-only deletion actions | YES | PASS_STATIC_AND_BROWSER |
 | personal/global visual separation | YES | PASS_SMOKE_AND_BROWSER |
+| plugin info descriptions | YES | PASS_UNIT_SMOKE_AND_BROWSER |
+| Global Arena plugin URLs | YES | PASS_UNIT_SMOKE_AND_BROWSER |
 
 ---
 

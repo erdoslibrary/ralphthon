@@ -11,6 +11,7 @@
 | R-005 | Name/theme may imply protected IP | Medium | MITIGATING | use Coqid-game branding, avoid direct protected claims |
 | R-006 | Demo depends on local run | Medium | MITIGATED | documented commands; smoke and browser rehearsal passed |
 | R-007 | Team `back` branch may add API dependency | Medium | OPEN | require contract/test/risk updates before merge |
+| R-008 | Sample plugin URLs may be mistaken for live plugin registry links | Low | MITIGATED | use example.com sample URLs and document mock/local MVP |
 
 ---
 

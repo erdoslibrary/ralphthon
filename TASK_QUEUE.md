@@ -27,6 +27,7 @@ Implementation gate: OPEN_WITH_MOCK_DATA
 | T-013 | Coordinate `back` branch integration proposal | Coordinator | TODO | API_CONTRACT.md | document review before merge |
 | T-014 | Add review-only actions for deletion recommendations | Builder | VALIDATED | T-007,UI_STATES.md | npm test / npm run build / npm run smoke / browser rehearsal |
 | T-015 | Apply survival-game visual theme and separate personal/global views | Builder | VALIDATED | T-005,T-009,UI_STATES.md | npm test / npm run build / npm run smoke / browser rehearsal V-006 |
+| T-016 | Add plugin info panels and Global Arena URLs | Builder | VALIDATED | T-005,T-009,DATA_MODEL.md,UI_STATES.md | npm test / npm run build / npm run smoke / browser rehearsal V-007 |
 
 ---
 
