@@ -46,6 +46,9 @@
 [x] My Case and Global Arena visually separated
 [x] plugin info panels shown in browser rehearsal
 [x] Global Arena plugin URLs shown in browser rehearsal
+[x] dalgona mission copy shown in browser rehearsal
+[x] expanded leaderboard badges shown in browser rehearsal
+[x] Weekly / Monthly transition checked in browser rehearsal
 [x] leaderboard shown in browser rehearsal
 [x] fallback/empty state shown in browser rehearsal
 [x] malformed-data fallback shown in browser rehearsal

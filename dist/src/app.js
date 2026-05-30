@@ -84,7 +84,11 @@ function setPeriod(period) {
   state.period = period;
   elements.weeklyTab.classList.toggle("active", period === "weekly");
   elements.monthlyTab.classList.toggle("active", period === "monthly");
-  renderLeaderboard();
+  elements.leaderboardList.style.opacity = "0";
+  window.setTimeout(() => {
+    renderLeaderboard();
+    elements.leaderboardList.style.opacity = "1";
+  }, 120);
 }
 
 function handleReviewAction(event) {

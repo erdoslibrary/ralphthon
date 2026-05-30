@@ -24,6 +24,9 @@ Coverage priority is behavior coverage, not vanity line coverage.
 | personal/global visual separation | YES | PASS_SMOKE_AND_BROWSER |
 | plugin info descriptions | YES | PASS_UNIT_SMOKE_AND_BROWSER |
 | Global Arena plugin URLs | YES | PASS_UNIT_SMOKE_AND_BROWSER |
+| dalgona reminder mission copy | YES | PASS_UNIT_AND_BROWSER |
+| expanded leaderboard badges | YES | PASS_UNIT_AND_BROWSER |
+| leaderboard tab fade transition | YES | PASS_BROWSER |
 
 ---
 

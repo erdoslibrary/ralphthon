@@ -4,7 +4,10 @@ export function buildLeaderboard(plugins, scores, period) {
   return plugins
     .map((plugin) => {
       const survivalScore = scoreById.get(plugin.id)?.score ?? 0;
-      const periodScore = period === "weekly" ? plugin.weeklyUses * 10 + survivalScore : plugin.monthlyUses * 4 + survivalScore;
+      const periodScore =
+        period === "weekly"
+          ? Math.min(plugin.weeklyUses * 10, 60) + survivalScore * 0.4
+          : Math.min(plugin.monthlyUses * 3, 60) + survivalScore * 0.4;
 
       return {
         pluginId: plugin.id,
@@ -12,8 +15,8 @@ export function buildLeaderboard(plugins, scores, period) {
         pluginUrl: plugin.url ?? "",
         rank: 0,
         period,
-        score: periodScore,
-        badge: getBadge(plugin, survivalScore)
+        score: Math.round(periodScore),
+        badge: getBadge(plugin, survivalScore, period)
       };
     })
     .sort((a, b) => b.score - a.score || a.pluginName.localeCompare(b.pluginName))
@@ -23,8 +26,11 @@ export function buildLeaderboard(plugins, scores, period) {
     }));
 }
 
-function getBadge(plugin, survivalScore) {
-  if (survivalScore < 40) return "MOST_ENDANGERED";
-  if (plugin.estimatedCost === "low" && plugin.monthlyUses >= 10) return "MOST_EFFICIENT";
-  return "MOST_USED";
+function getBadge(plugin, survivalScore, period) {
+  if (survivalScore < 40) return "ELIMINATED";
+  if (survivalScore >= 85) return "SURVIVOR";
+  if (plugin.estimatedCost === "low" && plugin.monthlyUses >= 10) return "EFFICIENT_SURVIVOR";
+  if (period === "weekly" && plugin.weeklyUses >= 8) return "WEEKLY_CHAMPION";
+  if (period === "monthly" && plugin.monthlyUses >= 20) return "MONTHLY_CHAMPION";
+  return "ACTIVE";
 }

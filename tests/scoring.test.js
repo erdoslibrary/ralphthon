@@ -17,12 +17,16 @@ test("high-use low-cost recent plugin becomes SAFE", () => {
 test("low-use high-cost old plugin becomes DELETION_RECOMMENDED", () => {
   const score = calculateSurvivalScore(samplePlugins.find((plugin) => plugin.id === "plugin-old-expensive"));
   assert.equal(score.status, STATUSES.DELETION_RECOMMENDED);
-  assert.ok(score.reasons.some((reason) => reason.includes("Review only")));
+  assert.ok(score.reasons.some((reason) => reason.includes("탈락 선언")));
+  assert.ok(score.reasons.some((reason) => reason.includes("실제 삭제는 수동으로만 가능합니다")));
 });
 
 test("useful but forgotten plugin becomes REMINDER_RECOMMENDED", () => {
   const score = calculateSurvivalScore(samplePlugins.find((plugin) => plugin.id === "plugin-presentations"));
+  const reminderCopy = ["달고나", "생존 경고", "심사위원 주목"];
+
   assert.equal(score.status, STATUSES.REMINDER_RECOMMENDED);
+  assert.ok(score.reasons.some((reason) => reminderCopy.some((copy) => reason.includes(copy))));
 });
 
 test("classifier thresholds match contract", () => {

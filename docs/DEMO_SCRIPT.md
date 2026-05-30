@@ -14,6 +14,37 @@ Coqid-game is a Codex plugin survival dashboard that scores installed plugins an
 
 ## 2. Demo Flow
 
+### Presenter Script
+
+Opening:
+
+```txt
+안녕하세요. 저희 팀은 Codex 플러그인 관리를 survival game으로 만들었습니다.
+설치만 해두고 안 쓰는 플러그인, 다들 있으시죠?
+Coqid-game이 그 플러그인들을 심사합니다.
+```
+
+Survival Check:
+
+```txt
+Run Survival Check를 누르면 주간 사용량, 월간 사용량, 비용, 마지막 사용일을 조합해 생존 점수를 계산합니다.
+70점 이상은 Safe, 40~69점은 달고나 미션, 40점 미만은 삭제 검토 권고입니다.
+```
+
+Leaderboard:
+
+```txt
+Global Arena는 주간/월간 생존 순위를 보여줍니다.
+1위는 황금 테두리로 강조되고, Survivor, Monthly Champion, Eliminated 같은 뱃지가 붙습니다.
+```
+
+Closing:
+
+```txt
+Coqid-game은 유용한 것은 살리고, 잊힌 것은 리마인드하고, 불필요한 것은 검토 대상으로 표시합니다.
+실제 삭제는 없습니다. 선택은 개발자가 합니다.
+```
+
 ### Step 1: Open Coqid-game
 
 Expected:
@@ -127,6 +158,8 @@ Result: PASS_LOCAL
 Evidence:
 - Browser rehearsal at `http://127.0.0.1:4173`
 - Run Survival Check displayed Safe, Reminder Recommended, and Deletion Recommended
+- Dalgona mission copy displayed on reminder card
+- Expanded leaderboard badges displayed in Global Arena
 - Add to Cleanup List displayed local review note
 - Empty Demo displayed safe empty state
 - Malformed Demo displayed controlled fallback state

@@ -72,4 +72,4 @@ If `back` introduces API/backend behavior, it must update API_CONTRACT.md, DATA_
 Current readiness: READY_LOCAL_MVP_EXCLUDING_BACK
 
 Reason:
-Local MVP validation passed with mock data. Browser rehearsal confirmed the demo flow, survival-game-inspired visual theme, My Case / Global Arena separation, plugin info panels, Global Arena plugin URLs, review-only deletion recommendation actions, empty fallback, malformed-data fallback, and no console errors. `back` branch integration remains outside the current ready scope.
+Local MVP validation passed with mock data. Browser rehearsal confirmed the demo flow, survival-game-inspired visual theme from docs/UI_UX_PROPOSAL.md, dalgona reminder copy, elimination copy, expanded leaderboard badges, My Case / Global Arena separation, plugin info panels, Global Arena plugin URLs, review-only deletion recommendation actions, empty fallback, malformed-data fallback, and no console errors. `back` branch integration remains outside the current ready scope.

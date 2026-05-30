@@ -24,6 +24,8 @@ Map Coqid-game acceptance criteria to concrete tests or validation steps.
 | AC-012 | app runs without live Codex API | TEST-012 | smoke | PASS_INITIAL |
 | UI-001 | plugin info panels visible | TEST-014 | unit/smoke/browser | PASS |
 | UI-002 | global arena plugin URLs visible | TEST-015 | unit/smoke/browser | PASS |
+| UI-003 | dalgona reminder copy visible | TEST-016 | unit/smoke/browser | PASS |
+| UI-004 | expanded leaderboard badges visible | TEST-017 | unit/smoke/browser | PASS |
 
 ---
 

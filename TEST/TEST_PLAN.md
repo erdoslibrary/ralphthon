@@ -18,6 +18,8 @@ Coqid-game testing focuses on deterministic scoring, safe recommendation behavio
 | leaderboard sorting | unit/integration | P0 |
 | plugin info metadata and panels | unit/smoke/browser | P0 |
 | Global Arena plugin URLs | unit/smoke/browser | P0 |
+| dalgona mission copy | unit/browser | P0 |
+| expanded leaderboard badges | unit/browser | P0 |
 | empty data state | integration/smoke | P0 |
 | malformed data fallback | unit/integration | P0 |
 | local demo startup | smoke | P0 |
@@ -38,7 +40,9 @@ Coqid-game testing focuses on deterministic scoring, safe recommendation behavio
 10. Deletion recommended UI exposes review-only actions without changing plugins.
 11. Plugin info metadata uses safe description and URL shapes.
 12. Global Arena leaderboard entries include plugin URLs.
-13. App runs without live Codex API.
+13. Reminder recommended plugins show score-band mission copy.
+14. Leaderboard entries use expanded survival badges.
+15. App runs without live Codex API.
 
 ---
 

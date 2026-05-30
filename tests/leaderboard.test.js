@@ -26,3 +26,11 @@ test("leaderboard entries include plugin URLs", () => {
   const leaderboard = buildLeaderboard(samplePlugins, scorePlugins(samplePlugins), "weekly");
   assert.match(leaderboard[0].pluginUrl, /^https?:\/\//);
 });
+
+test("leaderboard uses expanded survival badges", () => {
+  const leaderboard = buildLeaderboard(samplePlugins, scorePlugins(samplePlugins), "weekly");
+  const badges = new Set(leaderboard.map((entry) => entry.badge));
+
+  assert.ok(badges.has("SURVIVOR"));
+  assert.ok(badges.has("ELIMINATED"));
+});

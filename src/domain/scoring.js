@@ -67,13 +67,21 @@ function buildReasons(plugin, score, status) {
   if (plugin.estimatedCost === "high") reasons.push("High estimated cost");
   if (plugin.lastUsedDaysAgo > 90) reasons.push("Not used recently");
   if (status === STATUSES.DELETION_RECOMMENDED) {
-    reasons.push("Review only: no automatic deletion is performed");
+    reasons.push("탈락 선언: 이 플러그인은 삭제 검토 대상입니다. 실제 삭제는 수동으로만 가능합니다.");
+    reasons.push(`최종 생존 점수: ${score}점 - 기준(40점) 미달`);
   }
   if (status === STATUSES.SAFE && reasons.length === 0) reasons.push("Balanced usage and cost signals");
-  if (status === STATUSES.REMINDER_RECOMMENDED && !reasons.includes("Useful history but low recent use")) {
-    reasons.push("Worth revisiting before removal");
+  if (status === STATUSES.REMINDER_RECOMMENDED) {
+    reasons.push(getDalgonaMissionMessage(score));
   }
 
   reasons.push(`Deterministic survival score: ${score}`);
   return reasons;
+}
+
+function getDalgonaMissionMessage(score) {
+  if (score < 50) return "달고나를 완성하세요: 한 번만 더 호출하면 Safe 등급으로 복귀합니다.";
+  if (score < 60) return "생존 경고: 활동 신호가 미약합니다. 이번 주가 마지막 기회일 수 있습니다.";
+  if (score < 65) return "심사위원 주목: 이 플러그인은 한 번 더 기회가 있습니다.";
+  return "달고나 미션 발동: 7일 내 재사용하지 않으면 다음 라운드에서 탈락합니다.";
 }

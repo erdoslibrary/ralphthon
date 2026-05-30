@@ -10,7 +10,7 @@ A failure is not fully resolved until a regression test exists and passes, an ex
 
 ```txt
 Document status: DRAFT
-Total regression items: 1
+Total regression items: 2
 Validator decision: PASS_LOCAL_MVP
 ```
 
@@ -36,6 +36,7 @@ ACCEPTED_RISK
 | Regression ID | Original Failure | Severity | Related AC | Test/Method | Command | Status | Evidence |
 |---|---|---|---|---|---|---|---|
 | REG-001 | No failure; destructive-action risk protection | Critical risk | AC-010 | tests/noDeletion.test.js + scripts/smoke.mjs + browser rehearsal | npm test / npm run smoke | PASS | VALIDATION_REPORT.md V-005 |
+| REG-002 | F-001 | Low | AC-004 | tests/scoring.test.js | npm test | PASS | VALIDATION_REPORT.md V-008 |
 
 ## 5. Regression Item Template
 

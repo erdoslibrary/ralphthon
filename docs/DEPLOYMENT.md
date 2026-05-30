@@ -68,10 +68,10 @@ Last validated:
 
 ```txt
 2026-05-30
-npm test: PASS, 16 passed / 0 failed
+npm test: PASS, 17 passed / 0 failed
 npm run build: PASS, dist/ created
-npm run smoke: PASS, dashboard entry text, safety copy, review-only actions, Plugin intel, and Plugin URL found
-browser rehearsal: PASS, local demo flow, plugin info panels, Global Arena URLs, and fallback states confirmed
+npm run smoke: PASS, dashboard entry text, safety copy, review-only actions, Plugin intel, Plugin URL, dalgona copy, elimination copy, and expanded badges found
+browser rehearsal: PASS, local demo flow, plugin info panels, Global Arena URLs, dalgona copy, expanded badges, tab transition, and fallback states confirmed
 ```
 
 ---

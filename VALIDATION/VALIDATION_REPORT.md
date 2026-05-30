@@ -32,6 +32,7 @@ Builder claim is not evidence. Command output, file inspection, passing test res
 | V-005 | Final local MVP validation after review-only actions | npm test / npm run build / npm run smoke / browser rehearsal | 0 / 0 / 0 / PASS | PASS | 13 tests passed, build complete, smoke inspection passed, browser demo flow and fallbacks passed |
 | V-006 | Visual theme and personal/global separation validation | npm test / npm run build / npm run smoke / browser rehearsal | 0 / 0 / 0 / PASS | PASS | 13 tests passed, build complete, smoke text found, themed browser flow passed |
 | V-007 | Plugin info panels and Global Arena URL validation | npm test / npm run build / npm run smoke / browser rehearsal | 0 / 0 / 0 / PASS | PASS | 16 tests passed, build complete, smoke text found, info panel and URL browser flow passed |
+| V-008 | UI/UX proposal implementation validation | npm test / npm run build / npm run smoke / browser rehearsal | 0 / 0 / 0 / PASS | PASS | 17 tests passed, build complete, smoke text found, dalgona copy and expanded badges passed |
 
 ## 4. Acceptance Criteria Validation Table
 
@@ -60,6 +61,9 @@ Additional UI validation:
 | Narrow viewport visibility | PASS | browser rehearsal V-006 | Global Arena appears before plugin cards in narrow browser layout |
 | Plugin info panels | PASS | npm test / npm run smoke / browser rehearsal V-007 | Info button opens Plugin intel panel |
 | Global Arena URLs | PASS | npm test / npm run smoke / browser rehearsal V-007 | Each leaderboard row renders Plugin URL |
+| Dalgona mission copy | PASS | npm test / npm run smoke / browser rehearsal V-008 | Reminder card shows score-band mission copy |
+| Expanded leaderboard badges | PASS | npm test / npm run smoke / browser rehearsal V-008 | Survivor and Eliminated badges visible |
+| Leaderboard tab fade | PASS | browser rehearsal V-008 | Weekly to Monthly transition checked |
 
 ## 4.1 Validation Run V-001: Initial Automated Validation
 
@@ -208,6 +212,83 @@ npm run dev
 ### Risks
 - `back` branch integration remains unvalidated and must not be merged into local MVP without contract, data, test mapping, risk, and validation updates.
 - Real Codex API, exact cost, and production leaderboard remain accepted out-of-MVP risks.
+
+### Validator Decision
+PASS_LOCAL_MVP_WITH_ACCEPTED_BACK_SCOPE_RISK
+
+## 4.6 Validation Run V-008: UI/UX Proposal Implementation
+
+### Timestamp
+2026-05-30
+
+### Trigger
+User provided a UI/UX proposal and requested implementation on the new branch.
+
+### Scope
+`docs/UI_UX_PROPOSAL.md`, dark survival-game palette refinement, gradient title, dalgona reminder pulse, deletion flicker, Survival Check button styling, first-place gold leaderboard treatment, score-band mission copy, normalized leaderboard score formula, expanded badges, tab fade, automated validation, and browser rehearsal.
+
+### Related Task
+T-017.
+
+### Related Acceptance Criteria
+AC-001 through AC-012 plus UI-003 and UI-004.
+
+### Commands Run
+```bash
+npm test
+npm run build
+npm run smoke
+```
+
+### Command Results
+- Command: npm test
+- Exit status: 0
+- Result: PASS
+- Notes: 17 tests passed, 0 failed, 0 skipped. Initial run exposed F-001; test expectation was fixed and validation passed.
+
+- Command: npm run build
+- Exit status: 0
+- Result: PASS
+- Notes: Build complete: dist/.
+
+- Command: npm run smoke
+- Exit status: 0
+- Result: PASS
+- Notes: Smoke inspection found dashboard text, safety copy, Plugin intel, Plugin URL, dalgona copy, elimination copy, SURVIVOR, and ELIMINATED.
+
+### Browser Rehearsal
+- URL: http://127.0.0.1:4173
+- Run Survival Check: PASS
+- Dalgona reminder copy visible: PASS
+- Elimination copy visible: PASS
+- Survivor badge visible: PASS
+- Eliminated badge visible: PASS
+- Monthly tab transition checked: PASS
+- First-place gold styling visible: PASS
+- Browser console errors: 0
+- Screenshot evidence: /private/tmp/coqid-game-ui-ux-proposal.png
+
+### Tests Summary
+- Total: 17
+- Passed: 17
+- Failed: 0 after F-001 fix
+- Skipped: 0
+
+### Build Summary
+- Build command: npm run build
+- Result: PASS
+
+### Runtime / Smoke Summary
+- Existing local dev server: http://127.0.0.1:4173
+- Smoke command: npm run smoke
+- Result: PASS
+
+### Failed Items
+- F-001 occurred during first `npm test` run and is CLOSED after test expectation fix.
+
+### Risks
+- UI styling is survival-game-inspired and does not claim official affiliation.
+- `back` branch integration remains outside this validation scope.
 
 ### Validator Decision
 PASS_LOCAL_MVP_WITH_ACCEPTED_BACK_SCOPE_RISK
