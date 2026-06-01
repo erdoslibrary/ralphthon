@@ -2,6 +2,7 @@ import { access } from "node:fs/promises";
 
 const requiredFiles = [
   "cli/coqid-game.js",
+  "cli/coquid-game.js",
   "src/cli.js",
   "src/dataLoader.js",
   "src/scoring.js",

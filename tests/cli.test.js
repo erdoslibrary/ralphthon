@@ -10,6 +10,14 @@ function runCli(args) {
   });
 }
 
+function runCliWithInput(args, input) {
+  return spawnSync(process.execPath, ["cli/coqid-game.js", ...args], {
+    cwd: process.cwd(),
+    encoding: "utf8",
+    input
+  });
+}
+
 test("help output exposes analyze and leaderboard", () => {
   const result = runCli(["--help"]);
 
@@ -27,6 +35,17 @@ test("declared package bin points to the runnable CLI entrypoint", async () => {
   });
 
   assert.equal(entrypoint, "./cli/coqid-game.js");
+  assert.equal(packageJson.bin["coquid-game"], "./cli/coquid-game.js");
+  assert.equal(result.status, 0);
+  assert.match(result.stdout, /Coqid-game/);
+});
+
+test("coquid-game typo-safe entrypoint runs the CLI", () => {
+  const result = spawnSync(process.execPath, ["cli/coquid-game.js", "--help"], {
+    cwd: process.cwd(),
+    encoding: "utf8"
+  });
+
   assert.equal(result.status, 0);
   assert.match(result.stdout, /Coqid-game/);
 });
@@ -36,9 +55,26 @@ test("analyze prints report sections and safety notice", () => {
 
   assert.equal(result.status, 0);
   assert.match(result.stdout, /Coqid-game Survival Report/);
+  assert.match(result.stdout, /#\s+\|\s+Plugin\s+\|\s+Weekly/);
+  assert.match(result.stdout, /1\s+\|\s+OpenAI Docs Navigator\s+\|\s+19/);
   assert.match(result.stdout, /DELETE_RECOMMENDED/);
   assert.match(result.stdout, /REMIND/);
   assert.match(result.stdout, /does not delete plugins automatically/);
+});
+
+test("interactive analyze shows details, deletion choice, and waits for quit", () => {
+  const result = runCliWithInput(
+    ["analyze", "--data", "fixtures/plugins.json", "--interactive"],
+    "4\ndelete\nquit\n"
+  );
+
+  assert.equal(result.status, 0);
+  assert.match(result.stdout, /Select rank, delete, keep, or quit/);
+  assert.match(result.stdout, /Plugin Detail #4/);
+  assert.match(result.stdout, /Role: maintenance/);
+  assert.match(result.stdout, /Deletion Choice/);
+  assert.match(result.stdout, /Recorded recommendation-only delete choice/);
+  assert.match(result.stdout, /Session ended\. No plugins were deleted\./);
 });
 
 test("analyze can emit machine-readable JSON", () => {
@@ -56,7 +92,8 @@ test("weekly leaderboard prints sorted ranks", () => {
   assert.equal(result.status, 0);
   assert.match(result.stdout, /Coqid-game Leaderboard/);
   assert.match(result.stdout, /Period: weekly/);
-  assert.match(result.stdout, /1 \| OpenAI Docs Navigator/);
+  assert.match(result.stdout, /Rank\s+\|\s+Plugin\s+\|\s+Usage/);
+  assert.match(result.stdout, /1\s+\|\s+OpenAI Docs Navigator\s+\|\s+19/);
 });
 
 test("monthly leaderboard prints sorted ranks", () => {
@@ -65,7 +102,7 @@ test("monthly leaderboard prints sorted ranks", () => {
   assert.equal(result.status, 0);
   assert.match(result.stdout, /Coqid-game Leaderboard/);
   assert.match(result.stdout, /Period: monthly/);
-  assert.match(result.stdout, /1 \| OpenAI Docs Navigator/);
+  assert.match(result.stdout, /1\s+\|\s+OpenAI Docs Navigator\s+\|\s+72/);
 });
 
 test("invalid fixture returns controlled non-zero error", () => {

@@ -4,7 +4,8 @@
   "description": "CLI survival ranking assistant for Codex plugins and skills.",
   "type": "module",
   "bin": {
-    "coqid-game": "./cli/coqid-game.js"
+    "coqid-game": "./cli/coqid-game.js",
+    "coquid-game": "./cli/coquid-game.js"
   },
   "files": [
     "cli/",

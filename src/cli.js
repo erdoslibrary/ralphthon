@@ -1,14 +1,16 @@
 import { loadPluginData } from "./dataLoader.js";
 import { analyzePlugins, buildLeaderboard } from "./scoring.js";
-import { formatAnalyzeTable, formatLeaderboardTable, formatError } from "./formatters.js";
+import { createInterface } from "node:readline/promises";
+import { formatAnalyzeTable, formatLeaderboardTable, formatError, formatPluginDetail } from "./formatters.js";
 import { CoqidError, toPublicError } from "./errors.js";
 
 const HELP = `Coqid-game
 
 Usage:
   coqid-game --help
-  coqid-game analyze --data <path> [--format table|json] [--threshold <number>]
+  coqid-game analyze --data <path> [--format table|json] [--threshold <number>] [--interactive|--no-interactive]
   coqid-game leaderboard --period weekly|monthly --data <path> [--sort score|usage|efficiency]
+  coquid-game analyze --data <path>
 
 Commands:
   analyze       Rank plugins by survival score and print recommendations.
@@ -19,11 +21,16 @@ Safety:
 `;
 
 export async function runCli(argv, io) {
-  const { stdout, stderr, exit } = io;
+  const { stdin, stdout, stderr, exit } = io;
 
   try {
-    const result = await handleCommand(argv);
+    const result = await handleCommand(argv, {
+      interactiveDefault: Boolean(stdin?.isTTY && stdout?.isTTY)
+    });
     stdout.write(result.output);
+    if (result.interactive) {
+      await runInteractiveSelection(result.results, { stdin, stdout });
+    }
     exit(result.exitCode);
   } catch (error) {
     const publicError = toPublicError(error);
@@ -33,7 +40,7 @@ export async function runCli(argv, io) {
   }
 }
 
-export async function handleCommand(argv) {
+export async function handleCommand(argv, context = {}) {
   if (argv.length === 0 || argv.includes("--help") || argv.includes("-h")) {
     return { output: HELP, exitCode: 0 };
   }
@@ -42,7 +49,7 @@ export async function handleCommand(argv) {
   const options = parseOptions(argv.slice(1));
 
   if (command === "analyze") {
-    return analyzeCommand(options);
+    return analyzeCommand(options, context);
   }
 
   if (command === "leaderboard") {
@@ -64,9 +71,10 @@ export async function handleCommand(argv) {
   );
 }
 
-async function analyzeCommand(options) {
+async function analyzeCommand(options, context) {
   const format = options.format || "table";
   ensureAllowed("format", format, ["table", "json"]);
+  const interactive = resolveInteractive(options, context.interactiveDefault);
 
   const threshold = options.threshold === undefined ? undefined : Number(options.threshold);
   if (options.threshold !== undefined && (!Number.isFinite(threshold) || threshold < 0 || threshold > 100)) {
@@ -87,7 +95,12 @@ async function analyzeCommand(options) {
     };
   }
 
-  return { output: formatAnalyzeTable(results), exitCode: 0 };
+  return {
+    output: formatAnalyzeTable(results),
+    exitCode: 0,
+    interactive,
+    results
+  };
 }
 
 async function leaderboardCommand(options) {
@@ -105,6 +118,7 @@ async function leaderboardCommand(options) {
 
 function parseOptions(argv) {
   const options = {};
+  const flagOptions = new Set(["interactive", "no-interactive"]);
 
   for (let index = 0; index < argv.length; index += 1) {
     const token = argv[index];
@@ -117,6 +131,11 @@ function parseOptions(argv) {
     }
 
     const key = token.slice(2);
+    if (flagOptions.has(key)) {
+      options[key] = true;
+      continue;
+    }
+
     const value = argv[index + 1];
     if (!value || value.startsWith("--")) {
       throw new CoqidError(
@@ -130,6 +149,94 @@ function parseOptions(argv) {
   }
 
   return options;
+}
+
+async function runInteractiveSelection(results, io) {
+  const { stdin, stdout } = io;
+  let selected = null;
+
+  const processAnswer = (rawAnswer) => {
+    const answer = rawAnswer.trim().toLowerCase();
+
+    if (["quit", "q", "exit", "end", "done", "stop", "종료", "끝"].includes(answer)) {
+      stdout.write("Session ended. No plugins were deleted.\n");
+      return true;
+    }
+
+    if (answer === "delete" || answer === "d") {
+      if (!selected) {
+        stdout.write("Select a plugin number before choosing delete.\n");
+        return false;
+      }
+      stdout.write(`Recorded recommendation-only delete choice for ${selected.name}. No files were deleted.\n`);
+      return false;
+    }
+
+    if (answer === "keep" || answer === "k") {
+      if (!selected) {
+        stdout.write("Select a plugin number before choosing keep.\n");
+        return false;
+      }
+      stdout.write(`Recorded keep choice for ${selected.name} in this session.\n`);
+      return false;
+    }
+
+    const rank = Number(answer);
+    if (Number.isInteger(rank) && rank >= 1 && rank <= results.length) {
+      selected = results[rank - 1];
+      stdout.write(`${formatPluginDetail(selected, rank)}\n`);
+      return false;
+    }
+
+    stdout.write("Unknown input. Enter a rank number, delete, keep, or quit.\n");
+    return false;
+  };
+
+  if (!stdin?.isTTY) {
+    const input = await readAll(stdin);
+    for (const answer of input.split(/\r?\n/).filter((line) => line.length > 0)) {
+      stdout.write("Select rank, delete, keep, or quit > ");
+      if (processAnswer(answer)) {
+        return;
+      }
+    }
+    stdout.write("Input ended. No plugins were deleted.\n");
+    return;
+  }
+
+  const readline = createInterface({ input: stdin, output: stdout });
+
+  try {
+    while (true) {
+      const answer = await readline.question("Select rank, delete, keep, or quit > ");
+      if (processAnswer(answer)) {
+        return;
+      }
+    }
+  } finally {
+    readline.close();
+  }
+}
+
+async function readAll(stream) {
+  let input = "";
+  for await (const chunk of stream) {
+    input += chunk;
+  }
+  return input;
+}
+
+function resolveInteractive(options, interactiveDefault) {
+  if (options.format === "json") {
+    return false;
+  }
+  if (options["no-interactive"]) {
+    return false;
+  }
+  if (options.interactive) {
+    return true;
+  }
+  return Boolean(interactiveDefault);
 }
 
 function ensureAllowed(name, value, allowed) {
