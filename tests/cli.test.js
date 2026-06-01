@@ -65,15 +65,29 @@ test("analyze prints report sections and safety notice", () => {
 test("interactive analyze shows details, deletion choice, and waits for quit", () => {
   const result = runCliWithInput(
     ["analyze", "--data", "fixtures/plugins.json", "--interactive"],
-    "4\ndelete\nquit\n"
+    "rank\n4\ndelete\nyes\nquit\n"
   );
 
   assert.equal(result.status, 0);
   assert.match(result.stdout, /Select rank, delete, keep, or quit/);
+  assert.match(result.stdout, /Enter a rank number to inspect a plugin/);
   assert.match(result.stdout, /Plugin Detail #4/);
   assert.match(result.stdout, /Role: maintenance/);
   assert.match(result.stdout, /Deletion Choice/);
-  assert.match(result.stdout, /Recorded recommendation-only delete choice/);
+  assert.match(result.stdout, /Type yes to confirm or no to cancel/);
+  assert.match(result.stdout, /Confirmed recommendation-only delete choice/);
+  assert.match(result.stdout, /Session ended\. No plugins were deleted\./);
+});
+
+test("interactive delete choice can be cancelled", () => {
+  const result = runCliWithInput(
+    ["analyze", "--data", "fixtures/plugins.json", "--interactive"],
+    "4\ndelete\nno\nquit\n"
+  );
+
+  assert.equal(result.status, 0);
+  assert.match(result.stdout, /Delete choice requested for Legacy Plugin Wrangler/);
+  assert.match(result.stdout, /Cancelled delete choice for Legacy Plugin Wrangler/);
   assert.match(result.stdout, /Session ended\. No plugins were deleted\./);
 });
 
