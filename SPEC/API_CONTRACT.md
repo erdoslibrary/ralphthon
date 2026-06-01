@@ -45,6 +45,7 @@ Prints usage, available commands, options, and exits 0.
 
 ```bash
 coqid-game analyze --data ./fixtures/plugins.json
+coqid-game analyze --data ./fixtures/plugins.json --interactive
 ```
 
 Options:
@@ -54,6 +55,8 @@ Options:
 | `--data <path>` | YES | Path to local plugin usage JSON |
 | `--format table|json` | NO | Output format; default table |
 | `--threshold <number>` | NO | Delete recommendation threshold |
+| `--interactive` | NO | Force rank-selection detail loop |
+| `--no-interactive` | NO | Disable TTY interactive mode |
 
 Success output must include:
 
@@ -74,6 +77,21 @@ Exit code:
 0 on success
 1 on validation or input error
 2 on unexpected internal error
+```
+
+Interactive behavior:
+
+```txt
+In a terminal TTY, analyze stays open after the ranking table.
+Users enter a rank number to view plugin details, usage, role/category, recommendation reason, and recommendation-only delete/keep choices.
+The session exits only when the user types quit, q, exit, end, done, stop, 종료, or 끝.
+No delete/keep choice performs filesystem deletion.
+```
+
+Compatibility alias:
+
+```bash
+coquid-game analyze --data ./fixtures/plugins.json
 ```
 
 ---

@@ -28,6 +28,7 @@ Reason: User requested plugin/CLI-based workflow.
 | CLI-STATE-006 | Leaderboard output | YES | AC-006 | YES |
 | CLI-STATE-007 | Invalid input error output | YES | AC-007 | YES |
 | CLI-STATE-008 | Demo-ready fixture output | YES | AC-009 | YES |
+| CLI-STATE-009 | Interactive plugin detail output | YES | AC-002/AC-004/AC-005/AC-008 | YES |
 
 ---
 
@@ -42,6 +43,7 @@ Plugin Rankings
 Deletion Recommendations
 Reminder Candidates
 Safety Notice: No plugins were deleted.
+Interactive prompt for rank selection and quit command.
 ```
 
 Leaderboard command should print:
@@ -112,5 +114,8 @@ Command
 [x] analyze output includes REMIND candidate
 [x] analyze output includes no-delete safety notice
 [x] leaderboard output includes sorted ranks
+[x] analyze table columns are aligned
+[x] entering a rank shows plugin detail and delete/keep choices
+[x] quit command exits the interactive session
 [x] invalid data output includes controlled error and non-zero exit
 ```

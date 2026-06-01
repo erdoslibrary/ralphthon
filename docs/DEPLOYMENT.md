@@ -58,6 +58,12 @@ node cli/coqid-game.js --help
 # Run analyze demo
 node cli/coqid-game.js analyze --data ./fixtures/plugins.json
 
+# Run interactive analyze demo
+node cli/coqid-game.js analyze --data ./fixtures/plugins.json --interactive
+
+# Typo-safe alias observed during testing
+node cli/coquid-game.js analyze --data ./fixtures/plugins.json
+
 # Run leaderboard demo
 node cli/coqid-game.js leaderboard --period weekly --data ./fixtures/plugins.json
 ```

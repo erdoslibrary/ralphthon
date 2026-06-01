@@ -35,6 +35,8 @@ Raw Line Coverage: NOT_MEASURED
 | No actual deletion | YES | TEST-010 | PASS |
 | Under-2-minute demo | YES | TEST-011 | PASS |
 | Package excludes local runtime state | YES | PACK-001 | PASS |
+| Interactive rank details and quit flow | YES | TEST-012 | PASS |
+| `coquid-game` typo-safe alias | YES | TEST-013 | PASS |
 
 ---
 

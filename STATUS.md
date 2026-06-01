@@ -16,7 +16,7 @@ Implementation gate: CLOSED_COMPLETE
 Validation state: PASS
 Demo readiness: READY
 Human intervention required: NO
-Last updated: 2026-05-30
+Last updated: 2026-06-01
 ```
 
 ---
@@ -54,7 +54,7 @@ npm run build
 node cli/coqid-game.js --help
 
 # Analyze
-node cli/coqid-game.js analyze --data ./fixtures/plugins.json
+node cli/coqid-game.js analyze --data ./fixtures/plugins.json --interactive
 
 # Leaderboard
 node cli/coqid-game.js leaderboard --period weekly --data ./fixtures/plugins.json

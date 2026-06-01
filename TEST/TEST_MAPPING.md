@@ -19,6 +19,8 @@ Map Coqid-game acceptance criteria to concrete CLI tests, commands, and evidence
 | AC-007 | FR-007 | P0 | TEST-008/009 | CLI_ERROR | `tests/cli.test.js`, `tests/validation.test.js` | `npm test` | controlled errors for invalid schema, malformed JSON, missing file, and empty data | VALIDATION_REPORT.md V-001 | PASS |
 | AC-008 | FR-008 | P0 | TEST-010 | STATIC/INTEGRATION | `tests/noDeletion.test.js` | `npm test` | no destructive delete behavior | VALIDATION_REPORT.md V-001 | PASS |
 | AC-009 | NFR-002 | P0 | TEST-011 | SMOKE_DEMO | `scripts/smoke.mjs` | `/usr/bin/time -p npm run smoke` | demo path under 2 min | VALIDATION_REPORT.md V-002 | PASS |
+| AC-010 | UX-CLI | P0 | TEST-012 | CLI_INTERACTIVE | `tests/cli.test.js` | `node cli/coqid-game.js analyze --data fixtures/plugins.json --interactive` | rank selection shows detail, delete/keep choice, quit exits | VALIDATION_REPORT.md V-006 | PASS |
+| AC-011 | UX-CLI | P0 | TEST-013 | CLI_COMPAT | `tests/cli.test.js` | `node cli/coquid-game.js --help` | typo-safe alias works | VALIDATION_REPORT.md V-006 | PASS |
 
 ---
 
@@ -36,6 +38,12 @@ node cli/coqid-game.js --help
 
 # Analyze
 node cli/coqid-game.js analyze --data ./fixtures/plugins.json
+
+# Analyze interactive
+node cli/coqid-game.js analyze --data ./fixtures/plugins.json --interactive
+
+# Typo-safe alias
+node cli/coquid-game.js analyze --data ./fixtures/plugins.json
 
 # Leaderboard weekly
 node cli/coqid-game.js leaderboard --period weekly --data ./fixtures/plugins.json

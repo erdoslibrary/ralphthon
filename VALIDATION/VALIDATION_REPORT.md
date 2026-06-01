@@ -30,6 +30,7 @@ Builder claim is not evidence. Command output, file inspection, passing test res
 | V-003 | Smoke/demo rehearsal | `npm run smoke` | 0 | PASS | help, analyze, leaderboard, invalid input paths passed |
 | V-004 | Timed smoke rehearsal | `/usr/bin/time -p npm run smoke` | 0 | PASS | real 2.97 seconds, under 2 minutes |
 | V-005 | Package dry-run safety | `npm --cache /private/tmp/npm-cache pack --dry-run --json` | 0 | PASS | package allowlist excludes `.omx/`; 40 expected entries |
+| V-006 | Interactive CLI evaluator | `npm test && npm run build && npm run smoke` | 0 | PASS | 20 tests passed; build and smoke passed |
 
 ## 4. Acceptance Criteria Validation Table
 
@@ -44,6 +45,8 @@ Builder claim is not evidence. Command output, file inspection, passing test res
 | AC-007 | TEST-008/009 | PASS | `tests/cli.test.js`, `tests/validation.test.js`; `npm test` | invalid schema, malformed JSON, missing file, and empty data handled |
 | AC-008 | TEST-010 | PASS | `tests/noDeletion.test.js`; `npm test` | no destructive source patterns; delete command unavailable |
 | AC-009 | TEST-011 | PASS | `/usr/bin/time -p npm run smoke` | smoke rehearsal completed in 1.66 seconds |
+| AC-010 | TEST-012 | PASS | `tests/cli.test.js`; `npm test` | rank number shows detail, delete choice is recommendation-only, quit exits |
+| AC-011 | TEST-013 | PASS | `tests/cli.test.js`; `npm test` | `cli/coquid-game.js` alias works |
 
 ## 5. Final Validation Run V-001 to V-004
 

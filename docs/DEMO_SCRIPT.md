@@ -43,6 +43,12 @@ node cli/coqid-game.js --help
 # Analyze
 node cli/coqid-game.js analyze --data ./fixtures/plugins.json
 
+# Analyze interactive detail loop
+node cli/coqid-game.js analyze --data ./fixtures/plugins.json --interactive
+
+# Typo-safe alias
+node cli/coquid-game.js analyze --data ./fixtures/plugins.json
+
 # Weekly leaderboard
 node cli/coqid-game.js leaderboard --period weekly --data ./fixtures/plugins.json
 
@@ -106,7 +112,27 @@ Related AC: AC-004, AC-008
 
 ---
 
-### Step 4: Point out reminder candidates
+### Step 4: Select a plugin rank for details
+
+Command/input:
+
+```txt
+4
+delete
+quit
+```
+
+Expected visible output:
+
+```txt
+Plugin detail includes role, usage, score, reason, recommendation-only delete choice, and explicit quit behavior.
+```
+
+Related AC: AC-004, AC-005, AC-008
+
+---
+
+### Step 5: Point out reminder candidates
 
 Expected visible output:
 
@@ -118,7 +144,7 @@ Related AC: AC-005
 
 ---
 
-### Step 5: Show leaderboard
+### Step 6: Show leaderboard
 
 Command:
 
@@ -136,7 +162,7 @@ Related AC: AC-006
 
 ---
 
-### Step 6: Show controlled failure
+### Step 7: Show controlled failure
 
 Command:
 
